@@ -1,0 +1,160 @@
+{
+    "type": "array",
+    "properties": [{
+        "key": "cluster",
+        "description": "E-HPC cluster properties",
+        "type": "array",
+        "properties": [{
+            "key": "name",
+            "label": "Name",
+            "description": "The name of the E-HPC cluster service",
+            "type": "string",
+            "default": "E-HPC Cluster",
+            "required": "no"
+        }, {
+            "key": "description",
+            "label": "Description",
+            "description": "The description of the E-HPC cluster service",
+            "type": "string",
+            "default": "",
+            "required": "no"
+        }, {
+            "key": "vxnet",
+            "label": "VxNet",
+            "description": "Choose a vxnet to join",
+            "type": "string",
+            "default": "",
+            "required": "yes"
+        }, {
+            "key": "login",
+            "label": "Login",
+            "description": "E-HPC login node",
+            "type": "array",
+            "properties": [{
+                "key": "cpu",
+                "label": "CPU",
+                "description": "Cpus of each node",
+                "type": "integer",
+                "default": 1,
+                "range": [1,2, 4, 8, 16, 32, 64],
+                "required": "yes"
+            }, {
+                "key": "memory",
+                "label": "Memory",
+                "description": "Memory of each node (in MiB)",
+                "type": "integer",
+                "default": 2048,
+                "range": [1024, 2048, 4096, 8192, 16384],
+                "required": "yes"
+            }, {
+                "key": "count",
+                "label": "LoginCount",
+                "description": "Number of login nodes for the cluster to create",
+                "type": "integer",
+                "default": 1,
+                "range": [1],
+                "required": "yes"
+            }, {
+                "key": "instance_class",
+                "label": "Instance Class",
+                "description": "The instance type for the cluster to run, such as high performance, high performance plus",
+                "type": "integer",
+                "default": 202,
+                "range": [101, 202, 301],
+                "required": "yes"
+            }]
+        },{
+            "key": "controller",
+            "label": "Controller",
+            "description": "E-HPC controller node",
+            "type": "array",
+            "properties": [{
+                "key": "cpu",
+                "label": "CPU",
+                "description": "Cpus of each node",
+                "type": "integer",
+                "default": 1,
+                "range": [1,2, 4, 8],
+                "required": "yes"
+            }, {
+                "key": "memory",
+                "label": "Memory",
+                "description": "Memory of each node (in MiB)",
+                "type": "integer",
+                "default": 2048,
+                "range": [1024, 2048, 4096, 8192, 16384],
+                "required": "yes"
+            }, {
+                "key": "count",
+                "label": "ControllerCount",
+                "description": "Number of controller nodes for the cluster to create",
+                "type": "integer",
+                "default": 1,
+                "min": 1,
+                "max": 99,
+                "required": "yes"
+            }, {
+                "key": "instance_class",
+                "label": "Instance Class",
+                "description": "The instance type for the cluster to run, such as high performance, high performance plus",
+                "type": "integer",
+                "default": 202,
+                "range": [101, 202, 301],
+                "required": "yes"
+            }]
+        },{
+            "key": "compute",
+            "label": "compute",
+            "description": "E-HPC controller node",
+            "type": "array",
+            "properties": [{
+                "key": "cpu",
+                "label": "CPU",
+                "description": "Cpus of each node",
+                "type": "integer",
+                "default": 1,
+                "range": [1,2, 4, 8, 16, 32, 64],
+                "required": "yes"
+            }, {
+                "key": "memory",
+                "label": "Memory",
+                "description": "Memory of each node (in MiB)",
+                "type": "integer",
+                "default": 2048,
+                "range": [1024, 2048, 4096, 8192, 16384, 32768, 65536],
+                "required": "yes"
+            }, {
+                "key": "count",
+                "label": "ComputeCount",
+                "description": "Number of compute nodes for the cluster to create",
+                "type": "integer",
+                "default": 1,
+                "range": [1, 2],
+                "required": "yes"
+            }, {
+                "key": "instance_class",
+                "label": "Instance Class",
+                "description": "The instance type for the cluster to run, such as high performance, high performance plus",
+                "type": "integer",
+                "default": 202,
+                "range": [101, 202, 301],
+                "required": "yes"
+            }]
+        }]
+    },
+    {
+        "key": "env",
+        "description": "E-HPC service properties",
+        "type": "array",
+        "properties": [{
+            "key": "replica.lag.time.max.ms",
+            "label": "replica.lag.time.max.ms",
+            "description": "The time interval at which leaders will remove followers from isr",
+            "default": 10000,
+            "type": "integer",
+            "min": 6000,
+            "max": 99999,
+            "required": "no"
+        }]
+    }]
+}

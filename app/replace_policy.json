@@ -1,0 +1,283 @@
+{
+    "pek3": {
+        "instance_class": [{
+            "src": "0",
+            "dst": 101
+        }, {
+            "src": "1",
+            "dst": 202
+        }],
+        "volume_class": [{
+            "src": "0",
+            "dst": 100
+        }, {
+            "src": "3",
+            "dst": 200
+        }]
+    },
+    "pek3b": {
+        "instance_class": [{
+            "src": "0",
+            "dst": 101
+        }, {
+            "src": "1",
+            "dst": 202
+        }],
+        "volume_class": [{
+            "src": "0",
+            "dst": 100
+        }, {
+            "src": "3",
+            "dst": 200
+        }]
+    },
+    "pek3c": {
+        "instance_class": [{
+            "src": "0",
+            "dst": 101
+        }, {
+            "src": "1",
+            "dst": 202
+        }],
+        "volume_class": [{
+            "src": "0",
+            "dst": 100
+        }, {
+            "src": "3",
+            "dst": 200
+        }]
+    },
+    "pek3d": {
+        "instance_class": [{
+            "src": "0",
+            "dst": 101
+        }, {
+            "src": "1",
+            "dst": 202
+        }],
+        "volume_class": [{
+            "src": "0",
+            "dst": 100
+        }, {
+            "src": "3",
+            "dst": 200
+        }]
+    },
+    "ap3": {
+        "instance_class": [{
+            "src": "0",
+            "dst": 101
+        }, {
+            "src": "1",
+            "dst": 202
+        }, {
+            "src": "201",
+            "dst": 202
+        }, {
+            "src": "301",
+            "dst": 202
+        }],
+        "volume_class": [{
+            "src": "0",
+            "dst": 100
+        }, {
+            "src": "3",
+            "dst": 200
+        }, {
+            "src": "2",
+            "dst": 6
+        }, {
+            "src": "5",
+            "dst": 6
+        }]
+    },
+    "ap3a": {
+        "instance_class": [{
+            "src": "0",
+            "dst": 101
+        }, {
+            "src": "1",
+            "dst": 202
+        }, {
+            "src": "301",
+            "dst": 202
+        }, {
+            "src": "201",
+            "dst": 202
+        }],
+        "volume_class": [{
+            "src": "0",
+            "dst": 100
+        }, {
+            "src": "3",
+            "dst": 200
+        }, {
+            "src": "2",
+            "dst": 6
+        }, {
+            "src": "5",
+            "dst": 6
+        }]
+    },
+    "sh1": {
+        "instance_class": [{
+            "src": "0",
+            "dst": 101
+        }, {
+            "src": "1",
+            "dst": 202
+        }],
+        "volume_class": [{
+            "src": "0",
+            "dst": 100
+        }, {
+            "src": "3",
+            "dst": 200
+        }]
+    },
+    "sh1a": {
+        "instance_class": [{
+            "src": "0",
+            "dst": 101
+        }, {
+            "src": "1",
+            "dst": 202
+        }],
+        "volume_class": [{
+            "src": "0",
+            "dst": 100
+        }, {
+            "src": "3",
+            "dst": 200
+        }]
+    },
+    "sh1b": {
+        "instance_class": [{
+            "src": "0",
+            "dst": 101
+        }, {
+            "src": "1",
+            "dst": 202
+        }],
+        "volume_class": [{
+            "src": "0",
+            "dst": 100
+        }, {
+            "src": "3",
+            "dst": 200
+        }]
+    },
+    "pek3a": {
+        "instance_class": [{
+            "src": "101",
+            "dst": 0
+        }, {
+            "src": "201",
+            "dst": 1
+        }, {
+            "src": "202",
+            "dst": 1
+        }, {
+            "src": "301",
+            "dst": 1
+        }],
+        "volume_class": [{
+            "src": "100",
+            "dst": 0
+        }, {
+            "src": "200",
+            "dst": 3
+        }, {
+            "src": "5",
+            "dst": 2
+        }, {
+            "src": "6",
+            "dst": 2
+        }]
+    },
+    "ap2a": {
+        "instance_class": [{
+            "src": "0",
+            "dst": 101
+        }, {
+            "src": "1",
+            "dst": 201
+        }, {
+            "src": "202",
+            "dst": 201
+        }, {
+            "src": "301",
+            "dst": 201
+        }],
+        "volume_class": [{
+            "src": "5",
+            "dst": 2
+        }, {
+            "src": "6",
+            "dst": 2
+        }, {
+            "src": "0",
+            "dst": 100
+        }, {
+            "src": "3",
+            "dst": 200
+        }]
+    },
+    "gd2": {
+        "instance_class": [{
+            "src": "0",
+            "dst": 101
+        }, {
+            "src": "1",
+            "dst": 201
+        }, {
+            "src": "202",
+            "dst": 201
+        }],
+        "volume_class": [{
+            "src": "0",
+            "dst": 100
+        }, {
+            "src": "3",
+            "dst": 200
+        }]
+    },
+    "gd2a": {
+        "instance_class": [{
+            "src": "0",
+            "dst": 101
+        }, {
+            "src": "1",
+            "dst": 201
+        }, {
+            "src": "202",
+            "dst": 201
+        }],
+        "volume_class": [{
+            "src": "0",
+            "dst": 100
+        }, {
+            "src": "3",
+            "dst": 200
+        }]
+    },
+    "gd2b": {
+        "instance_class": [{
+            "src": "0",
+            "dst": 101
+        }, {
+            "src": "1",
+            "dst": 201
+        }, {
+            "src": "202",
+            "dst": 201
+        }],
+        "volume_class": [{
+            "src": "0",
+            "dst": 100
+        }, {
+            "src": "3",
+            "dst": 200
+        }]
+    }
+}
