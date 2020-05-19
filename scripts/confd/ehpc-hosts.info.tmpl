@@ -1,0 +1,18 @@
+
+
+# Controller
+{{range $dir := lsdir "/hosts/controller/"}}{{$ip := printf "/hosts/controller/%s/ip" $dir}}
+{{getv $ip}}    controller{{end}}
+
+{{role :=getv "/host/role"}}
+{{if ne $role "compute" }}
+# Login
+{{range $dir := lsdir "/hosts/login/"}}{{$ip := printf "/hosts/login/%s/ip" $dir}}
+{{getv $ip}}    login{{end}}
+{{end}}
+
+{{if ne $role "login" }}
+# Compute Nodes
+{{range $dir := lsdir "/hosts/compute"}}{{$sid := printf "/hosts/compute/%s/sid" $dir}}{{$ip := printf "/hosts/compute/%s/ip" $dir}}
+{{getv $ip}}    node{{getv $sid}}{{end}}
+{{end}}

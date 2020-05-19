@@ -1,0 +1,7 @@
+[template]
+src = "ehpc-hosts.info.tmpl"
+dest = "/opt/qingcloud/ehpc-hosts.info"
+  keys = [
+    "/host/role",
+    "/hosts/",
+]

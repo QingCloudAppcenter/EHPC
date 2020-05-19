@@ -10,38 +10,32 @@
         "container": {
             "type": "lxc",
             "zone": "sh1",
-            "image": "img-9otlqzkw"
+            "image": "img-x6wmrotz"
         },
         "instance_class": {{cluster.login.instance_class}},
-        "count": {{cluster.login.count}},
         "cpu": {{cluster.login.cpu}},
         "memory": {{cluster.login.memory}},
-        "net": {
-            "vxnet": true,
-            "ib": true,
-            "base": true
-        },
-        "services": {},
-        "advanced_actions": [],
-        "health_check": {},
-        "monitor": {}
+        "count": {{cluster.login.count}},
+        "services": {
+            "init": {
+                "cmd": "/opt/qingcloud/app-agent/bin/inithosts"
+            }
+        }
     }, {
         "role":"controller",
         "container": {
             "type": "lxc",
             "zone": "sh1",
-            "image": "img-9otlqzkw"
+            "image": "img-i3har79s"
         },
         "instance_class": {{cluster.controller.instance_class}},
         "count": {{cluster.controller.count}},
         "cpu": {{cluster.controller.cpu}},
         "memory": {{cluster.controller.memory}},
-        "net": {
-            "vxnet": true,
-            "ib": true,
-            "base": true
-        },
         "services": {
+            "init": {
+                "cmd": "/opt/qingcloud/app-agent/bin/inithosts"
+            },
             "start": {
                 "cmd": "systemctl start slurmctld",
                 "order": 1
@@ -53,45 +47,38 @@
             "restart": {
                "cmd": "systemctl restart slurmctld"
             }
-        },
-        "advanced_actions": [],
-        "vertical_scaling_policy": "sequential",
-        "health_check": {},
-        "monitor": {}
+        }
     },{
-          "role":"compute",
-          "container": {
-              "type": "lxc",
-              "zone": "sh1",
-              "image": "img-9otlqzkw"
-          },
-          "instance_class": {{cluster.compute.instance_class}},
-          "count": {{cluster.compute.count}},
-          "cpu": {{cluster.compute.cpu}},
-          "memory": {{cluster.compute.memory}},
-          "net": {
-              "vxnet": false,
-              "ib": true,
-              "base": true
-          },
-          "services": {
-              "start": {
-                  "cmd": "systemctl start slurmd",
-                  "order": 1
-              },
-              "stop": {
-                  "cmd": "systemctl stop slurmd",
-                  "order": 2
-              },
-              "restart": {
-                 "cmd": "systemctl restart slurmd"
-              }
-          },
-          "vertical_scaling_policy": "sequential",
-          "health_check": {},
-          "monitor": {}
+        "role":"compute",
+        "container": {
+            "type": "lxc",
+            "zone": "sh1",
+            "image": "img-x6wmrotz"
+        },
+        "instance_class": {{cluster.compute.instance_class}},
+        "count": {{cluster.compute.count}},
+        "cpu": {{cluster.compute.cpu}},
+        "memory": {{cluster.compute.memory}},
+        "services": {
+            "init": {
+                "cmd": "/opt/qingcloud/app-agent/bin/inithosts"
+            },
+            "start": {
+                "cmd": "systemctl start slurmd",
+                "order": 2
+            },
+            "stop": {
+                "cmd": "systemctl stop slurmd",
+                "order": 1
+            },
+            "restart": {
+               "cmd": "systemctl restart slurmd"
+            }
+        },
+        "vertical_scaling_policy": "sequential"
     }],
     "env": {
-        "replica.lag.time.max.ms": {{env.replica.lag.time.max.ms}}
+        "replica.lag.time.max.ms": {{env.replica.lag.time.max.ms}},
+        "cluster_name": {{cluster.name}}
     }
 }
