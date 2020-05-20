@@ -1,0 +1,6 @@
+[template]
+src = "resource.info.tmpl"
+dest = "/opt/app/resource.info"
+  keys = [
+    "/hosts/",
+]

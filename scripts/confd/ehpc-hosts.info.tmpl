@@ -4,7 +4,7 @@
 {{range $dir := lsdir "/hosts/controller/"}}{{$ip := printf "/hosts/controller/%s/ip" $dir}}
 {{getv $ip}}    controller{{end}}
 
-{{role :=getv "/host/role"}}
+{{$role := getv "/host/role"}}
 {{if ne $role "compute" }}
 # Login
 {{range $dir := lsdir "/hosts/login/"}}{{$ip := printf "/hosts/login/%s/ip" $dir}}

@@ -8,7 +8,7 @@
 #
 # See the slurm.conf man page for more information.
 #
-ClusterName={{CLUSTER_NAME}}
+ClusterName={CLUSTER_NAME}
 ControlMachine=controller
 #ControlAddr=
 #BackupController=
@@ -95,8 +95,8 @@ JobCompType=jobcomp/none
 #PartitionName=controller Nodes=controller Default=NO MaxTime=INFINITE State=UP
 #PartitionName=default Nodes=node[1-2] Default=YES MaxTime=INFINITE State=UP
 
-NodeName=controller {{CONTROLLER_RESOURCE}}
-NodeName={{DEFAULT_NODE_NAME}} {{COMPUTE_RESOURCE}}
+NodeName=controller {CONTROLLER_RESOURCE}
+NodeName={DEFAULT_NODE_NAME} {COMPUTE_RESOURCE}
 
 PartitionName=controller Nodes=controller Default=NO MaxTime=INFINITE State=UP
-PartitionName=default Nodes={{DEFAULT_NODE_NAME}} Default=YES MaxTime=INFINITE State=UP
+PartitionName=default Nodes={DEFAULT_NODE_NAME} Default=YES MaxTime=INFINITE State=UP

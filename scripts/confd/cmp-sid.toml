@@ -1,0 +1,7 @@
+[template]
+src = "cmp-sid.info.tmpl"
+dest = "/opt/app/cmp-sid.info"
+  keys = [
+    "/hosts/",
+]
+

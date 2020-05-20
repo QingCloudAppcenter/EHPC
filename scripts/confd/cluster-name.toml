@@ -1,0 +1,6 @@
+[template]
+src = "cluster-name.info.tmpl"
+dest = "/opt/app/cluster-name.info"
+  keys = [
+    "/env/cluster_name",
+]

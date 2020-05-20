@@ -8,9 +8,9 @@
     "nodes": [{
         "role":"login",
         "container": {
-            "type": "lxc",
+            "type": "kvm",
             "zone": "sh1",
-            "image": "img-x6wmrotz"
+            "image": "img-06wi3qht"
         },
         "instance_class": {{cluster.login.instance_class}},
         "cpu": {{cluster.login.cpu}},
@@ -18,15 +18,15 @@
         "count": {{cluster.login.count}},
         "services": {
             "init": {
-                "cmd": "/opt/qingcloud/app-agent/bin/inithosts"
+                "cmd": "appctl init"
             }
         }
     }, {
         "role":"controller",
         "container": {
-            "type": "lxc",
+            "type": "kvm",
             "zone": "sh1",
-            "image": "img-i3har79s"
+            "image": "img-ylx7d3bd"
         },
         "instance_class": {{cluster.controller.instance_class}},
         "count": {{cluster.controller.count}},
@@ -34,26 +34,27 @@
         "memory": {{cluster.controller.memory}},
         "services": {
             "init": {
-                "cmd": "/opt/qingcloud/app-agent/bin/inithosts"
+                "cmd": "appctl init"
             },
             "start": {
-                "cmd": "systemctl start slurmctld",
+                "cmd": "appctl start",
                 "order": 1
             },
             "stop": {
-                "cmd": "systemctl stop slurmctld",
+                "cmd": "appctl stop",
                 "order": 2
             },
             "restart": {
-               "cmd": "systemctl restart slurmctld"
+               "cmd": "appctl restart",
+               "order": 1
             }
         }
     },{
         "role":"compute",
         "container": {
-            "type": "lxc",
+            "type": "kvm",
             "zone": "sh1",
-            "image": "img-x6wmrotz"
+            "image": "img-06wi3qht"
         },
         "instance_class": {{cluster.compute.instance_class}},
         "count": {{cluster.compute.count}},
@@ -61,18 +62,19 @@
         "memory": {{cluster.compute.memory}},
         "services": {
             "init": {
-                "cmd": "/opt/qingcloud/app-agent/bin/inithosts"
+                "cmd": "appctl init"
             },
             "start": {
-                "cmd": "systemctl start slurmd",
+                "cmd": "appctl start",
                 "order": 2
             },
             "stop": {
-                "cmd": "systemctl stop slurmd",
+                "cmd": "appctl start",
                 "order": 1
             },
             "restart": {
-               "cmd": "systemctl restart slurmd"
+               "cmd": "appctl restart",
+               "order": 2
             }
         },
         "vertical_scaling_policy": "sequential"
