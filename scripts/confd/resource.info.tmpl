@@ -2,4 +2,4 @@
 {{end}}
 
 {{range $dir := lsdir "/hosts/compute/"}}{{$cpu := printf "/hosts/compute/%s/cpu" $dir}}{{$mem := printf "/hosts/compute/%s/memory" $dir}}
-CPUs={{getv $cpu}} RealMemory={{sub (getv $mem) 512}} Procs={{getv $cpu}} State=UNKNOWN{{end}}
+CPUs={{getv $cpu}} RealMemory={{sub (getv $mem) 1024}} Procs={{getv $cpu}} State=UNKNOWN{{end}}

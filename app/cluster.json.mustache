@@ -10,7 +10,7 @@
         "container": {
             "type": "kvm",
             "zone": "sh1",
-            "image": "img-2stnzpq9"
+            "image": "img-vxn5puwq"
         },
         "instance_class": {{cluster.login.instance_class}},
         "cpu": {{cluster.login.cpu}},
@@ -26,7 +26,7 @@
         "container": {
             "type": "kvm",
             "zone": "sh1",
-            "image": "img-viousfhl"
+            "image": "img-ysd7jkhv"
         },
         "instance_class": {{cluster.controller.instance_class}},
         "count": {{cluster.controller.count}},
@@ -54,12 +54,17 @@
         "container": {
             "type": "kvm",
             "zone": "sh1",
-            "image": "img-2stnzpq9"
+            "image": "img-vxn5puwq"
         },
         "instance_class": {{cluster.compute.instance_class}},
         "count": {{cluster.compute.count}},
         "cpu": {{cluster.compute.cpu}},
         "memory": {{cluster.compute.memory}},
+        "volume": {
+            "size": {{cluster.compute.volume_size}},
+            "mount_point":  "/data",
+            "class": {{cluster.compute.volume_class}}
+        },
         "services": {
             "init": {
                 "cmd": "appctl init"
@@ -77,10 +82,9 @@
                "order": 2
             }
         },
-        "vertical_scaling_policy": "sequential"
+        "vertical_scaling_policy": "parallel"
     }],
     "env": {
-        "replica.lag.time.max.ms": {{env.replica.lag.time.max.ms}},
-        "cluster_name": {{cluster.name}}
+        "replica.lag.time.max.ms": {{env.replica.lag.time.max.ms}}
     }
 }

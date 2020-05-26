@@ -26,8 +26,8 @@ StateSaveLocation=/var/spool/slurm/ctld
 SlurmdSpoolDir=/var/spool/slurm/d
 SwitchType=switch/none
 MpiDefault=none
-SlurmctldPidFile=/usr/local/run/slurm/slurmctld.pid
-SlurmdPidFile=/usr/local/run/slurm/slurmd.pid
+SlurmctldPidFile=/var/run/slurmctld.pid
+SlurmdPidFile=/var/run/slurmd.pid
 ProctrackType=proctrack/pgid
 #PluginDir=
 #FirstJobId=1
@@ -90,13 +90,8 @@ JobCompType=jobcomp/none
 #AccountingStorageUser=
 
 # COMPUTE NODES
-#NodeName=controller CPUs=1 RealMemory=1536 Procs=1 State=UNKNOWN
-#NodeName=node[1-2] CPUs=1 RealMemory=1536 Procs=1 State=UNKNOWN
-#PartitionName=controller Nodes=controller Default=NO MaxTime=INFINITE State=UP
-#PartitionName=default Nodes=node[1-2] Default=YES MaxTime=INFINITE State=UP
-
 NodeName=controller {CONTROLLER_RESOURCE}
 NodeName={DEFAULT_NODE_NAME} {COMPUTE_RESOURCE}
 
 PartitionName=controller Nodes=controller Default=NO MaxTime=INFINITE State=UP
-PartitionName=default Nodes={DEFAULT_NODE_NAME} Default=YES MaxTime=INFINITE State=UP
+PartitionName=debug Nodes={DEFAULT_NODE_NAME} Default=YES MaxTime=INFINITE State=UP

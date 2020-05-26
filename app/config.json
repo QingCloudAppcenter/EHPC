@@ -134,9 +134,27 @@
                 "label": "ComputeCount",
                 "description": "Number of compute nodes for the cluster to create",
                 "type": "integer",
-                "default": 1,
+                "default": 2,
                 "min": 1,
                 "max": 99,
+                "required": "yes"
+            },{
+                "key": "volume_class",
+                "label": "Volume Class",
+                "description": "The volume type for each instance，such as high performance，high performance plus，high capacity",
+                "type": "integer",
+                "default": 200,
+                "range": [200, 5],
+                "required": "yes"
+            }, {
+                "key": "volume_size",
+                "label": "Volume Size",
+                "description": "The volume size for each instance",
+                "type": "integer",
+                "default": 100,
+                "min": 10,
+                "step": 10,
+                "auto_scale_step": 10,
                 "required": "yes"
             }]
         }]
