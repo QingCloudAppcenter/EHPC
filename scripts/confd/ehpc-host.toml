@@ -1,7 +1,0 @@
-[template]
-src = "ehpc-hosts.info.tmpl"
-dest = "/opt/app/ehpc-hosts.info"
-  keys = [
-    "/host/role",
-    "/hosts/",
-]

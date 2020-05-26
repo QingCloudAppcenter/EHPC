@@ -5,7 +5,8 @@ from constants import (
     HOSTS,
     WORK_DIR,
     BACKUP_HOSTS_CMD,
-    EHPC_HOSTS_INFO,
+    HOSTS_INFO,
+    HOSTNAME_INFO,
 )
 
 
@@ -25,7 +26,17 @@ def generate():
     with open(TMP_HOSTS, "w") as hosts:
         for line in ori_hosts:
             hosts.write(line)
-        with open(EHPC_HOSTS_INFO, "r") as ehpc_hosts:
+        with open(HOSTS_INFO, "r") as ehpc_hosts:
             hosts.writelines(ehpc_hosts.readlines())
 
     run_shell("mv {} {}".format(TMP_HOSTS, HOSTS))
+
+
+def set_hostname():
+    with open(HOSTNAME_INFO, "r") as f:
+        name = f.read()
+
+    if name:
+        run_shell("hostnamectl set-hostname {}".format(name))
+    else:
+        print "The hostname is none!"

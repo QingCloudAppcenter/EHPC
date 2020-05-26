@@ -1,34 +1,32 @@
 #!/usr/bin/env python
 
 import sys
-import requests
 from constants import (
     ACTION_INIT,
     ACTION_START,
     ACTION_STOP,
     ACTION_RESTART,
-    ROLE_URL,
     START_CMDS,
 )
-from common import run_shell
-from hosts import generate
+from common import run_shell, get_role
+from hosts import generate, set_hostname
 from slurm import generate_conf
 
 
 def init():
-    print "Generating hosts for cluster..."
+    print "Generating hosts..."
     generate()
+    print "Setup hostname..."
+    set_hostname()
     print "Generating hosts for slurm configurations..."
     generate_conf()
     print "Init done."
 
 
 def start():
-    res = requests.get(ROLE_URL)
-    if res.status_code != 200:
-        print "Failed to get role from metadata: {}".format(res.content)
+    role = get_role()
+    if not role:
         exit(1)
-    role = res.text
     if role in START_CMDS.keys():
         run_shell(START_CMDS[role])
         print "{} started.".format(role)

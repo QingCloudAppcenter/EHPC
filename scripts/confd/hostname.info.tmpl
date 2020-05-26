@@ -1,0 +1,1 @@
+{{$role := getv "/host/role"}}{{if ne $role "compute" }}{{getv "/host/role"}}{{else}}node{{getv "/host/sid"}}{{end}}

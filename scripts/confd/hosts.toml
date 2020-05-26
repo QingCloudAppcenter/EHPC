@@ -1,0 +1,7 @@
+[template]
+src = "hosts.info.tmpl"
+dest = "/opt/app/hosts.info"
+  keys = [
+    "/host/role",
+    "/hosts/",
+]
