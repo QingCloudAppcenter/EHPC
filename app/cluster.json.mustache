@@ -2,18 +2,17 @@
     "name": {{cluster.name}},
     "description": {{cluster.description}},
     "vxnet": {{cluster.vxnet}},
-    "multi_zone_policy": "round_robin",
-    "upgrade_policy": [],
     "upgrading_policy": "parallel",
     "nodes": [{
         "role":"login",
         "container": {
             "type": "kvm",
-            "zone": "sh1",
-            "image": "img-vxn5puwq"
+            "zone": "ehpc",
+            "image": "img-1a6wthif"
         },
         "instance_class": {{cluster.login.instance_class}},
         "cpu": {{cluster.login.cpu}},
+        "cpu_model": {{cluster.login.cpu_model}},
         "memory": {{cluster.login.memory}},
         "count": {{cluster.login.count}},
         "services": {
@@ -25,12 +24,13 @@
         "role":"controller",
         "container": {
             "type": "kvm",
-            "zone": "sh1",
-            "image": "img-ysd7jkhv"
+            "zone": "ehpc",
+            "image": "img-edm5cjek"
         },
         "instance_class": {{cluster.controller.instance_class}},
         "count": {{cluster.controller.count}},
         "cpu": {{cluster.controller.cpu}},
+        "cpu_model": {{cluster.controller.cpu_model}},
         "memory": {{cluster.controller.memory}},
         "services": {
             "init": {
@@ -53,12 +53,13 @@
         "role":"compute",
         "container": {
             "type": "kvm",
-            "zone": "sh1",
-            "image": "img-vxn5puwq"
+            "zone": "ehpc",
+            "image": "img-1a6wthif"
         },
         "instance_class": {{cluster.compute.instance_class}},
         "count": {{cluster.compute.count}},
         "cpu": {{cluster.compute.cpu}},
+        "cpu_model": {{cluster.compute.cpu_model}},
         "memory": {{cluster.compute.memory}},
         "volume": {
             "size": {{cluster.compute.volume_size}},

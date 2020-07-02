@@ -35,8 +35,8 @@
                 "label": "Instance Class",
                 "description": "The instance type for the cluster to run, such as high performance, high performance plus",
                 "type": "integer",
-                "default": 202,
-                "range": [101, 202, 301],
+                "default": 6,
+                "range": [101, 6, 301],
                 "required": "yes"
             },{
                 "key": "cpu",
@@ -46,7 +46,24 @@
                 "default": 1,
                 "range": [1,2, 4, 8, 16, 32, 64],
                 "required": "yes"
-            }, {
+            },{
+                "key": "cpu_model",
+                "label": "CPU Microarchitecture",
+                "description": "CPU Microarchitecture",
+                "type": "string",
+                "default": "IvyBridge",
+                "range": [
+                    "",
+                    "Westmere",
+                    "SandyBridge",
+                    "IvyBridge",
+                    "Haswell",
+                    "Broadwell",
+                    "Skylake",
+                    "CascadeLake"
+                ],
+                "required": "yes"
+            },{
                 "key": "memory",
                 "label": "Memory",
                 "description": "Memory of each node (in MiB)",
@@ -72,8 +89,8 @@
                 "label": "Instance Class",
                 "description": "The instance type for the cluster to run, such as high performance, high performance plus",
                 "type": "integer",
-                "default": 202,
-                "range": [101, 202, 301],
+                "default": 6,
+                "range": [101, 6, 301],
                 "required": "yes"
             }, {
                 "key": "cpu",
@@ -84,6 +101,23 @@
                 "range": [1,2, 4, 8],
                 "required": "yes"
             }, {
+                "key": "cpu_model",
+                "label": "CPU Microarchitecture",
+                "description": "CPU Microarchitecture",
+                "type": "string",
+                "default": "IvyBridge",
+                "range": [
+                    "",
+                    "Westmere",
+                    "SandyBridge",
+                    "IvyBridge",
+                    "Haswell",
+                    "Broadwell",
+                    "Skylake",
+                    "CascadeLake"
+                ],
+                "required": "yes"
+            },{
                 "key": "memory",
                 "label": "Memory",
                 "description": "Memory of each node (in MiB)",
@@ -110,8 +144,8 @@
                 "label": "Instance Class",
                 "description": "The instance type for the cluster to run, such as high performance, high performance plus",
                 "type": "integer",
-                "default": 202,
-                "range": [101, 202, 301],
+                "default": 6,
+                "range": [101, 6, 301],
                 "required": "yes"
             }, {
                 "key": "cpu",
@@ -120,6 +154,23 @@
                 "type": "integer",
                 "default": 1,
                 "range": [1,2, 4, 8, 16, 32, 64],
+                "required": "yes"
+            },{
+                "key": "cpu_model",
+                "label": "CPU Microarchitecture",
+                "description": "CPU Microarchitecture",
+                "type": "string",
+                "default": "IvyBridge",
+                "range": [
+                    "",
+                    "Westmere",
+                    "SandyBridge",
+                    "IvyBridge",
+                    "Haswell",
+                    "Broadwell",
+                    "Skylake",
+                    "CascadeLake"
+                ],
                 "required": "yes"
             }, {
                 "key": "memory",
@@ -134,7 +185,7 @@
                 "label": "ComputeCount",
                 "description": "Number of compute nodes for the cluster to create",
                 "type": "integer",
-                "default": 2,
+                "default": 1,
                 "min": 1,
                 "max": 99,
                 "required": "yes"
@@ -143,7 +194,7 @@
                 "label": "Volume Class",
                 "description": "The volume type for each instance，such as high performance，high performance plus，high capacity",
                 "type": "integer",
-                "default": 200,
+                "default": 5,
                 "range": [200, 5],
                 "required": "yes"
             }, {
