@@ -1,6 +1,0 @@
-[template]
-src = "hostname.info.tmpl"
-dest = "/opt/app/hostname.info"
-  keys = [
-    "/host/",
-]

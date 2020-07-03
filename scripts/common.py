@@ -1,7 +1,6 @@
 #!/usr/bin/env python
 
 import subprocess
-import requests
 from constants import *
 from datetime import datetime
 
@@ -19,8 +18,21 @@ def run_shell(cmd):
 
 
 def get_role():
-    res = requests.get(ROLE_URL)
-    if res.status_code != 200:
-        print "Failed to get role from metadata: {}".format(res.content)
-        return False
-    return res.text
+    with open(ROLE_INFO, 'r') as info:
+        role = info.read().strip()
+    if role:
+        print "The role is: {}".format(role)
+        return role
+    else:
+        print "The role is none!"
+        exit(1)
+
+
+def get_hostname():
+    role = get_role()
+    if role is ROLE_COMPUTE:
+        with open(CMP_SID_INFO, "r") as info:
+            sid = info.read().strip()
+        return "{}{}".format(role, sid)
+    else:
+        return role

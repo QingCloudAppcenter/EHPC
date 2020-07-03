@@ -10,6 +10,7 @@ from constants import (
     SLURM_CONF,
     SLURM_CONF_TMPL,
 )
+import os
 
 
 def generate_conf():
@@ -54,11 +55,12 @@ def generate_conf():
         node_name = "{}{}-{}]".format(node_name, start_sid, last_sid)
 
     # backup last slurm configuration
-    backup(BACKUP_SLURM_CONF_CMD)
+    if os.path.exists(SLURM_CONF):
+        backup(BACKUP_SLURM_CONF_CMD)
 
     # replace slurm.conf.template
-    TMP = "{}/slurm.conf.tmp".format(WORK_DIR)
-    with open(TMP, "w") as conf:
+    tmp_file = "{}/slurm.conf.tmp".format(WORK_DIR)
+    with open(tmp_file, "w") as conf:
         with open(SLURM_CONF_TMPL, "r") as tmpl:
             for line in tmpl.readlines():
                 if line:
@@ -68,4 +70,4 @@ def generate_conf():
                                        DEFAULT_NODE_NAME=node_name)
                 conf.write(line)
 
-    run_shell("mv {} {}".format(TMP, SLURM_CONF))
+    run_shell("mv {} {}".format(tmp_file, SLURM_CONF))

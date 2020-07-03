@@ -1,16 +1,23 @@
 {
     "name": {{cluster.name}},
     "description": {{cluster.description}},
-    "vxnet": {{cluster.vxnet}},
     "upgrading_policy": "parallel",
+    "vxnet": {{cluster.vxnet}},
     "nodes": [{
         "role":"login",
+        "os_reset": false,
         "container": {
             "type": "kvm",
             "zone": "ehpc",
-            "image": "img-1a6wthif"
+            "image": "img-u0h5mxfw"
+        },
+        "net": {
+            "vxnet": true,
+            "ib": true,
+            "base": false
         },
         "instance_class": {{cluster.login.instance_class}},
+        "nas_mount_point": {{cluster.login.nas_mount_point}},
         "cpu": {{cluster.login.cpu}},
         "cpu_model": {{cluster.login.cpu_model}},
         "memory": {{cluster.login.memory}},
@@ -22,12 +29,19 @@
         }
     }, {
         "role":"controller",
+        "os_reset": false,
         "container": {
             "type": "kvm",
             "zone": "ehpc",
-            "image": "img-edm5cjek"
+            "image": "img-u0h5mxfw"
+        },
+        "net": {
+            "vxnet": false,
+            "ib": true,
+            "base": false
         },
         "instance_class": {{cluster.controller.instance_class}},
+        "nas_mount_point": {{cluster.login.nas_mount_point}},
         "count": {{cluster.controller.count}},
         "cpu": {{cluster.controller.cpu}},
         "cpu_model": {{cluster.controller.cpu_model}},
@@ -51,21 +65,23 @@
         }
     },{
         "role":"compute",
+        "os_reset": false,
         "container": {
             "type": "kvm",
             "zone": "ehpc",
-            "image": "img-1a6wthif"
+            "image": "img-u0h5mxfw"
+        },
+        "net": {
+            "vxnet": false,
+            "ib": true,
+            "base": false
         },
         "instance_class": {{cluster.compute.instance_class}},
+        "nas_mount_point": {{cluster.login.nas_mount_point}},
         "count": {{cluster.compute.count}},
         "cpu": {{cluster.compute.cpu}},
         "cpu_model": {{cluster.compute.cpu_model}},
         "memory": {{cluster.compute.memory}},
-        "volume": {
-            "size": {{cluster.compute.volume_size}},
-            "mount_point":  "/data",
-            "class": {{cluster.compute.volume_class}}
-        },
         "services": {
             "init": {
                 "cmd": "appctl init"

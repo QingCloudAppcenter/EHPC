@@ -9,13 +9,13 @@ from constants import (
     START_CMDS,
 )
 from common import run_shell, get_role
-from hosts import generate, set_hostname
-from slurm import generate_conf
+from host_utils import generate_hosts, set_hostname
+from slurm_utils import generate_conf
 
 
 def init():
     print "Generating hosts..."
-    generate()
+    generate_hosts()
     print "Setup hostname..."
     set_hostname()
     print "Generating hosts for slurm configurations..."
@@ -31,7 +31,7 @@ def start():
         run_shell(START_CMDS[role])
         print "{} started.".format(role)
     else:
-        print "Nothing to start for role[{}].".format(role)
+        print "Nothing to do for role[{}].".format(role)
 
 
 def restart():

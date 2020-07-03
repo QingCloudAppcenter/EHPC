@@ -1,16 +1,15 @@
 #!/usr/bin/env python
 
-from common import run_shell, backup
+from common import run_shell, backup, get_hostname
 from constants import (
     HOSTS,
     WORK_DIR,
     BACKUP_HOSTS_CMD,
     HOSTS_INFO,
-    HOSTNAME_INFO,
 )
 
 
-def generate():
+def generate_hosts():
     backup(BACKUP_HOSTS_CMD)
 
     ori_hosts = []
@@ -22,21 +21,16 @@ def generate():
                 break
             line = old.readline()
 
-    TMP_HOSTS = "{}/hosts".format(WORK_DIR)
-    with open(TMP_HOSTS, "w") as hosts:
+    tmp_hosts = "{}/hosts".format(WORK_DIR)
+    with open(tmp_hosts, "w") as hosts:
         for line in ori_hosts:
             hosts.write(line)
         with open(HOSTS_INFO, "r") as ehpc_hosts:
             hosts.writelines(ehpc_hosts.readlines())
 
-    run_shell("mv {} {}".format(TMP_HOSTS, HOSTS))
+    run_shell("mv {} {}".format(tmp_hosts, HOSTS))
 
 
 def set_hostname():
-    with open(HOSTNAME_INFO, "r") as f:
-        name = f.read()
-
-    if name:
-        run_shell("hostnamectl set-hostname {}".format(name))
-    else:
-        print "The hostname is none!"
+    hostname = get_hostname()
+    run_shell("hostnamectl set-hostname {}".format(hostname))
