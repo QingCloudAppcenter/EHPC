@@ -9,6 +9,7 @@ from constants import (
     WORK_DIR,
     SLURM_CONF,
     SLURM_CONF_TMPL,
+    COMPUTE_HOSTNAME_PREFIX,
 )
 import os
 
@@ -37,7 +38,7 @@ def generate_conf():
                 sids.append(int(line))
     sids.sort()
 
-    node_name = "node["  # eg: [1-6,8]
+    node_name = "{}[".format(COMPUTE_HOSTNAME_PREFIX)  # eg: [1-6,8]
     start_sid = sids[0]  # eg: 1
     last_sid = start_sid
     for sid in sids:

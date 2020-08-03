@@ -1,0 +1,7 @@
+[template]
+src = "compute-sid.info.tmpl"
+dest = "/opt/app/conf/compute-sid.info"
+  keys = [
+    "/hosts/",
+]
+

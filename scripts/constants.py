@@ -8,7 +8,7 @@ BACKUP_DIR = "{}/backup".format(WORK_DIR)
 
 HOSTS_INFO = "{}/hosts.info".format(APP_CONF_DIR)
 RESOURCE_INFO = "{}/resource.info".format(APP_CONF_DIR)
-CMP_SID_INFO = "{}/cmp-sid.info".format(APP_CONF_DIR)
+CMP_SID_INFO = "{}/compute-sid.info".format(APP_CONF_DIR)
 ROLE_INFO = "{}/role.info".format(APP_CONF_DIR)
 CLS_NAME_INFO = "{}/cluster-name.info".format(APP_CONF_DIR)
 
@@ -25,6 +25,8 @@ ACTION_RESTART = "restart"
 
 ROLE_CONTROLLER = "controller"
 ROLE_COMPUTE = "compute"
+
+COMPUTE_HOSTNAME_PREFIX = "node"
 
 START_CMDS = {
     ROLE_CONTROLLER: "systemctl start slurmctld",
