@@ -146,7 +146,7 @@
                 "description": "Number of controller nodes for the cluster to create",
                 "type": "integer",
                 "default": 1,
-                "range": [1, 2],
+                "range": [1],
                 "required": "yes"
             }]
         },{
@@ -193,7 +193,7 @@
                 "description": "Memory of each node (in MiB)",
                 "type": "integer",
                 "default": 2048,
-                "range": [1024, 2048, 4096, 8192, 16384, 32768, 65536],
+                "range": [2048, 4096, 8192, 16384, 32768, 65536],
                 "required": "yes"
             }, {
                 "key": "count",
@@ -212,13 +212,39 @@
         "description": "E-HPC service properties",
         "type": "array",
         "properties": [{
-            "key": "replica.lag.time.max.ms",
-            "label": "replica.lag.time.max.ms",
-            "description": "The time interval at which leaders will remove followers from isr",
-            "default": 10000,
+            "key": "admin_user",
+            "label": "Admin User",
+            "description": "The admin user",
+            "default": "admin",
+            "type": "string",
+            "required": "no"
+        },{
+            "key": "admin_password",
+            "label": "Admin User Password",
+            "description": "The password of admin user",
+            "default": "",
+            "type": "password",
+            "required": "no"
+        },{
+            "key": "admin_uid",
+            "label": "Admin User UID",
+            "description": "The uid of admin user",
             "type": "integer",
-            "min": 6000,
-            "max": 99999,
+            "default": 1100,
+            "required": "no"
+        },{
+            "key": "admin_gid",
+            "label": "Admin User GID",
+            "description": "The gid of admin user",
+            "type": "integer",
+            "default": 1100,
+            "required": "no"
+        },{
+            "key": "nas_path",
+            "label": "NAS Path",
+            "description": "The nas path of lustre to mount.",
+            "default": "",
+            "type": "string",
             "required": "no"
         }]
     }]

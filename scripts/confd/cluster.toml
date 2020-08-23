@@ -1,0 +1,7 @@
+[template]
+src = "cluster.info.tmpl"
+dest = "/opt/app/conf/cluster.info.json"
+  keys = [
+    "/host",
+    "/env",
+]

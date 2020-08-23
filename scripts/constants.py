@@ -11,6 +11,7 @@ RESOURCE_INFO = "{}/resource.info".format(APP_CONF_DIR)
 CMP_SID_INFO = "{}/compute-sid.info".format(APP_CONF_DIR)
 ROLE_INFO = "{}/role.info".format(APP_CONF_DIR)
 CLS_NAME_INFO = "{}/cluster-name.info".format(APP_CONF_DIR)
+CLS_INFO_FILE = "{}/cluster.info.json".format(APP_CONF_DIR)
 
 SLURM_CONF = "/etc/slurm/slurm.conf"
 SLURM_CONF_TMPL = "{}/tmpl/slurm.conf.tmpl".format(WORK_DIR)
@@ -25,6 +26,7 @@ ACTION_RESTART = "restart"
 
 ROLE_CONTROLLER = "controller"
 ROLE_COMPUTE = "compute"
+ROLE_LOGIN = "login"
 
 COMPUTE_HOSTNAME_PREFIX = "node"
 

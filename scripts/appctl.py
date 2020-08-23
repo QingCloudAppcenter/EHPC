@@ -7,8 +7,13 @@ from constants import (
     ACTION_STOP,
     ACTION_RESTART,
     START_CMDS,
+    ROLE_LOGIN,
 )
-from common import run_shell, get_role
+from common import (
+    run_shell,
+    get_role,
+    get_cluster_info,
+)
 from host_utils import generate_hosts, set_hostname
 from slurm_utils import generate_conf
 
@@ -30,6 +35,19 @@ def start():
     if role in START_CMDS.keys():
         run_shell(START_CMDS[role])
         print "{} started.".format(role)
+    elif role == ROLE_LOGIN:
+        cluster_info = get_cluster_info()
+        user = cluster_info["admin_user"]
+        passwd = cluster_info["admin_password"]
+        uid = cluster_info["admin_uid"]
+        gid = cluster_info["admin_gid"]
+        nas_path = cluster_info.get("nas_path", user)
+        print "create user: [%s] [%s] [%s] [%s] [%s]" % (user, passwd, uid, gid, nas_path)
+        if user and passwd and uid and gid and nas_path:
+            run_shell("/opt/app/user.sh {} {} {} {} {}".format(
+                user, passwd, uid, gid, nas_path))
+        else:
+            print "skip creating user."
     else:
         print "Nothing to do for role[{}].".format(role)
 
