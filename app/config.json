@@ -26,6 +26,13 @@
             "default": "",
             "required": "yes"
         },{
+            "key": "nas_id",
+            "label": "NAS_ID",
+            "description": "nas id",
+            "type": "string",
+            "default": "",
+            "required": "yes"
+        },{
             "key": "login",
             "label": "Login",
             "description": "E-HPC login node",
@@ -84,7 +91,7 @@
                 "type": "string",
                 "label": "LustreMountPoint",
                 "description": "The mount point of lustre",
-                "default": "/mnt",
+                "default": "/home",
                 "required": "no"
             }]
         },{

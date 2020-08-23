@@ -3,6 +3,7 @@
     "description": {{cluster.description}},
     "upgrading_policy": "parallel",
     "vxnet": {{cluster.vxnet}},
+    "nas_id": {{cluster.nas_id}},
     "nodes": [{
         "role":"login",
         "os_reset": false,
@@ -22,6 +23,7 @@
         "cpu_model": {{cluster.login.cpu_model}},
         "memory": {{cluster.login.memory}},
         "count": {{cluster.login.count}},
+        "user_access": true,
         "services": {
             "init": {
                 "cmd": "appctl init"
