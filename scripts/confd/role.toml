@@ -1,6 +1,0 @@
-[template]
-src = "role.info.tmpl"
-dest = "/opt/app/conf/role.info"
-  keys = [
-    "/host/",
-]

@@ -5,7 +5,7 @@ from constants import (
     HOSTS,
     WORK_DIR,
     BACKUP_HOSTS_CMD,
-    HOSTS_INFO,
+    HOSTS_INFO_FILE,
 )
 
 
@@ -25,7 +25,7 @@ def generate_hosts():
     with open(tmp_hosts, "w") as hosts:
         for line in ori_hosts:
             hosts.write(line)
-        with open(HOSTS_INFO, "r") as ehpc_hosts:
+        with open(HOSTS_INFO_FILE, "r") as ehpc_hosts:
             hosts.writelines(ehpc_hosts.readlines())
 
     run_shell("mv {} {}".format(tmp_hosts, HOSTS))

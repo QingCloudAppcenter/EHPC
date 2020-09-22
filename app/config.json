@@ -30,7 +30,7 @@
             "label": "NAS_ID",
             "description": "nas id",
             "type": "string",
-            "default": "",
+            "default": "pu46atpam",
             "required": "yes"
         },{
             "key": "login",
@@ -152,7 +152,7 @@
         },{
             "key": "compute",
             "label": "compute",
-            "description": "E-HPC controller node",
+            "description": "E-HPC compute node",
             "type": "array",
             "properties": [{
                 "key": "instance_class",
@@ -206,46 +206,74 @@
                 "required": "yes"
             }]
         }]
-    },
-    {
+    }, {
+        "key": "service_params",
+        "description": "Custom service configuration properties",
+        "type": "array",
+        "properties": [{
+            "key": "controller_sp",
+            "description": "Custom service the role(controller) configuration properties",
+            "type": "array",
+            "properties": [{
+                    "key": "user_name",
+                    "label": "User Name",
+                    "description": "The name of the user",
+                    "type": "string",
+                    "default": "",
+                    "required": "yes"
+                },{
+                    "key": "password",
+                    "label": "Password",
+                    "description": "password of the user",
+                    "type": "password",
+                    "required": "yes"
+                },{
+                    "key": "new_password",
+                    "label": "New Password",
+                    "description": "new password of the user to reset",
+                    "type": "password",
+                    "required": "yes"
+            }]
+        }]
+    }, {
         "key": "env",
         "description": "E-HPC service properties",
         "type": "array",
         "properties": [{
-            "key": "admin_user",
+            "key": "admin.user",
             "label": "Admin User",
             "description": "The admin user",
             "default": "admin",
             "type": "string",
-            "required": "no"
+            "required": "yes"
         },{
-            "key": "admin_password",
+            "key": "admin.password",
             "label": "Admin User Password",
             "description": "The password of admin user",
             "default": "",
             "type": "password",
-            "required": "no"
+            "required": "yes"
         },{
-            "key": "admin_uid",
+            "key": "admin.user_id",
             "label": "Admin User UID",
             "description": "The uid of admin user",
             "type": "integer",
-            "default": 1100,
-            "required": "no"
+            "default": 45507,
+            "required": "yes"
         },{
-            "key": "admin_gid",
+            "key": "admin.group_id",
             "label": "Admin User GID",
             "description": "The gid of admin user",
             "type": "integer",
-            "default": 1100,
-            "required": "no"
+            "default": 45507,
+            "required": "yes"
         },{
             "key": "nas_path",
             "label": "NAS Path",
             "description": "The nas path of lustre to mount.",
             "default": "",
             "type": "string",
-            "required": "no"
+            "required": "yes"
         }]
     }]
 }

@@ -1,6 +1,0 @@
-[template]
-src = "cluster-name.info.tmpl"
-dest = "/opt/app/conf/cluster-name.info"
-  keys = [
-    "/cluster/cluster_id",
-]

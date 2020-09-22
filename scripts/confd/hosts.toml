@@ -5,3 +5,4 @@ dest = "/opt/app/conf/hosts.info"
     "/host/role",
     "/hosts/",
 ]
+reload_cmd = "appctl reload"

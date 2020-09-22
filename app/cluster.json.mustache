@@ -1,7 +1,6 @@
 {
     "name": {{cluster.name}},
     "description": {{cluster.description}},
-    "upgrading_policy": "parallel",
     "vxnet": {{cluster.vxnet}},
     "nas_id": {{cluster.nas_id}},
     "nodes": [{
@@ -10,7 +9,7 @@
         "container": {
             "type": "kvm",
             "zone": "nscc",
-            "image": "img-ebnjtbfl"
+            "image": "img-i1fgphgm"
         },
         "net": {
             "vxnet": true,
@@ -31,6 +30,14 @@
             "start": {
                 "cmd": "appctl start",
                 "order": 2
+            },
+            "stop": {
+                "cmd": "appctl stop",
+                "order": 1
+            },
+            "restart": {
+               "cmd": "appctl restart",
+               "order": 2
             }
         }
     }, {
@@ -39,7 +46,7 @@
         "container": {
             "type": "kvm",
             "zone": "nscc",
-            "image": "img-ebnjtbfl"
+            "image": "img-i1fgphgm"
         },
         "net": {
             "vxnet": false,
@@ -67,6 +74,34 @@
             "restart": {
                "cmd": "appctl restart",
                "order": 1
+            },
+
+            "add_user": {
+                "type": "custom",
+                "cmd": "userctl add",
+                "timeout": 180,
+                "service_params": {
+                    "user_name": {{service_params.controller_sp.user_name}},
+                    "password": {{service_params.controller_sp.password}}
+                }
+            },
+            "delete_user": {
+                "type": "custom",
+                "cmd": "userctl delete",
+                "timeout": 180,
+                "service_params": {
+                    "user_name": {{service_params.controller_sp.user_name}}
+                }
+            },
+            "reset_password": {
+                "type": "custom",
+                "cmd": "userctl passwd",
+                "timeout": 180,
+                "service_params": {
+                    "user_name": {{service_params.controller_sp.user_name}},
+                    "password": {{service_params.controller_sp.password}},
+                    "new_password": {{service_params.controller_sp.new_password}}
+                }
             }
         }
     },{
@@ -75,7 +110,7 @@
         "container": {
             "type": "kvm",
             "zone": "nscc",
-            "image": "img-ebnjtbfl"
+            "image": "img-i1fgphgm"
         },
         "net": {
             "vxnet": false,
@@ -105,13 +140,28 @@
                "order": 2
             }
         },
-        "vertical_scaling_policy": "parallel"
+        "vertical_scaling_policy": "parallel",
+        "advanced_actions": ["scale_horizontal"]
     }],
     "env": {
-        "admin_user": {{env.admin_user}},
-        "admin_password": {{env.admin_password}},
-        "admin_uid": {{env.admin_uid}},
-        "admin_gid": {{env.admin_gid}},
+        "admin_user": {{env.admin.user}},
+        "admin_password": {{env.admin.password}},
+        "admin_user_id": {{env.admin.user_id}},
+        "admin_group_id": {{env.admin.group_id}},
         "nas_path": {{env.nas_path}}
+    },
+    "display_tabs" : {
+        "cluster_user" : {
+            "cmd" : "userctl list",
+            "roles_to_execute_on": ["controller"]
+        }
+    },
+    "health_check": {
+        "enable": true,
+        "interval_sec": 60,
+        "timeout_sec": 10,
+        "healthy_threshold": 3,
+        "unhealthy_threshold": 3,
+        "check_cmd": "appctl check"
     }
 }
