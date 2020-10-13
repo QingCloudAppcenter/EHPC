@@ -19,6 +19,7 @@ from common import (
     logger,
     run_shell,
     get_role,
+    ArgsParser,
 )
 from host_utils import generate_hosts, set_hostname
 from slurm_utils import generate_conf
@@ -126,6 +127,8 @@ def help():
 
 
 ACTION_MAP = {
+    "help": help,
+    "--help": help,
     ACTION_APP_INIT: setup,
     ACTION_APP_START: start,
     ACTION_APP_STOP: stop,
@@ -136,18 +139,16 @@ ACTION_MAP = {
 
 
 def main(argv):
-    if len(argv) < 2:
-        help()
-        sys.exit(1)
-    else:
-        action = argv[1]
+    paeser = ArgsParser()
+    ret = paeser.parse(argv)
+    if not ret:
+        sys.exit(40)
 
-    if action in ACTION_MAP:
-        ACTION_MAP[action]()
+    if paeser.action in ACTION_MAP:
+        ACTION_MAP[paeser.action]()
     else:
-        logger.error("Un-support action:[%s], exist!", action)
-        help()
-        sys.exit(1)
+        logger.error("Un-support action:[%s], exit!", paeser.action)
+        sys.exit(40)
 
 
 if __name__ == "__main__":

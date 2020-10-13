@@ -19,7 +19,7 @@ import os
 def generate_conf():
     # get cluster_name
     cluster_info = get_cluster_info()
-    cls_name = cluster_info["name"]
+    cls_name = cluster_info["cluster_name"]
 
     ctl_resource = ""  # the first line in resource.info
     cmp_resource = ""  # the last line in resource.info
