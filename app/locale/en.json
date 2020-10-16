@@ -5,5 +5,7 @@
   "err_code44": "The user not exist.",
   "err_code45": "The user already exist.",
   "err_code46": "The administrator doesn't allowed to deleted.",
-  "err_code47": "The new password can't be same as current password."
+  "err_code47": "The new password can't be same as current password.",
+  "err_code54": "The software not exist.",
+  "err_code55": "The software already exist."
 }

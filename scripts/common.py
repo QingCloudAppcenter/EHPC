@@ -1,11 +1,12 @@
 #!/usr/bin/env python
 
+import os
 import sys
-import subprocess
+import time
 import traceback
 import simplejson as jsmod
 from datetime import datetime
-from os import path as os_path
+from subprocess import Popen, PIPE
 import logging
 from logging.handlers import RotatingFileHandler
 
@@ -17,14 +18,17 @@ from constants import (
     COMPUTE_HOSTNAME_PREFIX,
     ROLE_COMPUTE,
     ACTION_PARAM_CONF,
+    LOG_DEBUG_FLAG,
 )
 
-# create log dir
-if not os_path.exists(LOG_DIR):
-    subprocess.check_call("mkdir -p {}".format(LOG_DIR).split(" "))
+CMD_CHECK_INTERVAL = 2  # seconds
+
+if not os.path.exists(LOG_DIR):
+    os.system("mkdir -p {}".format(LOG_DIR))
 
 logger = logging.getLogger(__name__)
-logger.setLevel(logging.DEBUG)
+log_level = logging.DEBUG if os.path.exists(LOG_DEBUG_FLAG) else logging.INFO
+logger.setLevel(log_level)
 
 formater = logging.Formatter(
     '[%(asctime)s] - %(levelname)s - %(message)s [%(pathname)s:%(lineno)d]')
@@ -45,10 +49,40 @@ def backup(cmd):
     run_shell(cmd.format(now))
 
 
-def run_shell(cmd, without_log=False):
+def run_shell(cmd, without_log=False, **kwargs):
+    if type(cmd) not in [str, list]:
+        logger.error("The type of cmd[%s] is incorrect.", cmd)
+        return 1
     if not without_log:
-        logger.info("Run cmd[%s]...", cmd)
-    return subprocess.check_call(cmd.split(" "))
+        logger.info("Run cmd: [%s]..", cmd)
+
+    code, out, err = _run_shell(cmd, **kwargs)
+    if code == 0:
+        return 0
+    else:
+        logger.error("failed to run cmd, ret_code: [%s], "
+                     "output: [%s], err: [%s]", code, out, err)
+        sys.exit(1)
+
+
+def _run_shell(cmd, shell=True, cwd=None, timeout=60):
+    process = Popen(stdout=PIPE, stderr=PIPE, args=cmd, shell=shell, cwd=cwd)
+    output, err = process.communicate()
+    ret_code = process.poll()
+
+    remain_time = 0
+    while ret_code is None:
+        # timeout
+        if remain_time >= timeout:
+            process.terminate()
+            ret_code = "timeout"
+            break
+
+        time.sleep(CMD_CHECK_INTERVAL)
+        remain_time += CMD_CHECK_INTERVAL
+        ret_code = process.poll()
+
+    return ret_code, output, err
 
 
 def json_load(json_file, err_exit=False):
@@ -80,6 +114,10 @@ def get_cluster_info():
     return CLUSTER_INFO
 
 
+def get_admin_user():
+    return get_cluster_info()["admin_user"]
+
+
 def get_role():
     cluster_info = get_cluster_info()
     role = cluster_info.get("role")
@@ -106,23 +144,25 @@ class ArgsParser(object):
         self.directive = {}
 
     def parse(self, args):
-        logger.info("parse args: [%s]", args)
-        if len(args) < 1:
-            logger.error("parameter[%s] is not complete(action needed)!")
+        if len(args) < 2:
+            logger.error("parameter[%s] is not complete(action needed)!", args)
             return False
 
-        self.action = args[0]
-        if len(args) > 1:
-            self.directive = json_loads(args[1]) or {}
-        logger.debug("directive: [%s]", self.directive)
-        return self._check()
+        self.action = args[1]
+        if len(args) > 2:
+            self.directive = json_loads(args[2]) or {}
+        return self._check() if self.directive else True
 
     def _check(self):
+        logger.info("check param, directive: [%s]", self.directive)
         if self.action in ACTION_PARAM_CONF:
-            conf = ACTION_PARAM_CONF[self.action]
-            return ArgsParser._check_dict_param("ALL", self.directive, conf)
+            ret = ArgsParser.check(self.action, self.directive,
+                                   ACTION_PARAM_CONF[self.action])
+            logger.debug("Directive: [%s]", self.directive)
+            return ret
         else:
-            self.directive = {}  # clear directive that there is no param
+            # clear directive that action needn't param
+            self.directive = None  # clear directive that there is no param
         return True
 
     @staticmethod
@@ -130,12 +170,12 @@ class ArgsParser(object):
         logger.debug("check--> p: [%s] v: [%s], conf: [%s]", param, v, param_conf)
         ret = False
         p_type = param_conf["type"]
-        if p_type == "str":
+        if p_type is str:
             ret = ArgsParser._check_str_param(param, v, param_conf)
-        elif p_type == "list":
+        elif p_type is list:
             ret = ArgsParser._check_list_param(param, v, param_conf)
-        elif p_type == "dict":
-            ret = ArgsParser._check_dict_param(param, v, param_conf["children"])
+        elif p_type is dict:
+            ret = ArgsParser._check_dict_param(param, v, param_conf)
         else:
             logger.error("un-support param type[%s] of param[%s], conf: [%s]",
                          p_type, param, param_conf)
@@ -163,6 +203,9 @@ class ArgsParser(object):
             logger.error("miss value[%s] of param[%s]", list_v, param)
             return False
 
+        if isinstance(list_v, str):
+            list_v = json_loads(list_v)
+
         # check value type
         if not isinstance(list_v, list):
             logger.error("value[%s] of param[%s] should be list",
@@ -184,6 +227,9 @@ class ArgsParser(object):
             logger.error("miss value[%s] of param[%s]", dict_v, param)
             return False
 
+        if isinstance(dict_v, str):
+            dict_v = json_loads(dict_v)
+
         # check value type
         if not isinstance(dict_v, dict):
             logger.error("value[%s] of param[%s] for param_conf[%s] should be dict",
@@ -191,7 +237,7 @@ class ArgsParser(object):
             return False
 
         # check children
-        for p, conf in param_conf.items():
+        for p, conf in param_conf["children"].items():
             ret = ArgsParser.check(p, dict_v.get(p), conf)
             if not ret:
                 return ret

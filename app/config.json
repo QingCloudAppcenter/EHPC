@@ -84,7 +84,8 @@
                 "description": "Number of login nodes for the cluster to create",
                 "type": "integer",
                 "default": 1,
-                "range": [1],
+                "min": 1,
+                "max": 99,
                 "required": "yes"
             }, {
                 "key": "nas_mount_point",
@@ -233,6 +234,12 @@
                     "description": "new password of the user to reset",
                     "type": "password",
                     "required": "yes"
+            },{
+                    "key": "software",
+                    "label": "Software",
+                    "description": "the install/uninstall software list",
+                    "type": "string",
+                    "required": "yes"
             }]
         }]
     }, {
@@ -245,13 +252,14 @@
             "description": "The admin user",
             "default": "admin",
             "type": "string",
+            "pattern": "[a-z][a-z0-9]{3,12}",
             "required": "yes"
         },{
             "key": "admin.password",
             "label": "Admin User Password",
             "description": "The password of admin user",
-            "default": "",
             "type": "password",
+            "pattern": "[A-Za-z0-9!@#$%^&*()]{4,32}",
             "required": "yes"
         },{
             "key": "admin.user_id",
@@ -274,6 +282,13 @@
             "default": "",
             "type": "string",
             "required": "yes"
+        },{
+            "key": "software",
+            "label": "Software",
+            "description": "The software that need to install, eg: {name:s1, source:xx, installer:xx}, {..}, ..",
+            "default": "",
+            "type": "string",
+            "required": "no"
         }]
     }]
 }

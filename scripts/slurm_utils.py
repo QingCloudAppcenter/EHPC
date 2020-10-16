@@ -1,5 +1,6 @@
 #!/usr/bin/env python
 
+import os.path as os_path
 from common import (
     backup,
     run_shell,
@@ -8,12 +9,11 @@ from common import (
 from constants import (
     RESOURCE_INFO_FILE,
     BACKUP_SLURM_CONF_CMD,
-    WORK_DIR,
+    APP_HOME,
     SLURM_CONF,
     SLURM_CONF_TMPL,
     COMPUTE_HOSTNAME_PREFIX,
 )
-import os
 
 
 def generate_conf():
@@ -54,11 +54,11 @@ def generate_conf():
         node_name = "{}{}-{}]".format(node_name, start_sid, last_sid)
 
     # backup last slurm configuration
-    if os.path.exists(SLURM_CONF):
+    if os_path.exists(SLURM_CONF):
         backup(BACKUP_SLURM_CONF_CMD)
 
     # replace slurm.conf.template
-    tmp_file = "{}/slurm.conf.tmp".format(WORK_DIR)
+    tmp_file = "{}/slurm.conf.tmp".format(APP_HOME)
     with open(tmp_file, "w") as conf:
         with open(SLURM_CONF_TMPL, "r") as tmpl:
             for line in tmpl.readlines():

@@ -9,7 +9,7 @@
         "container": {
             "type": "kvm",
             "zone": "nscc",
-            "image": "img-i1fgphgm"
+            "image": "img-s17drl1r"
         },
         "net": {
             "vxnet": true,
@@ -23,6 +23,7 @@
         "memory": {{cluster.login.memory}},
         "count": {{cluster.login.count}},
         "user_access": true,
+        "advanced_actions": ["scale_horizontal", "associate_eip"],
         "services": {
             "init": {
                 "cmd": "appctl init"
@@ -46,7 +47,7 @@
         "container": {
             "type": "kvm",
             "zone": "nscc",
-            "image": "img-i1fgphgm"
+            "image": "img-s17drl1r"
         },
         "net": {
             "vxnet": false,
@@ -75,7 +76,6 @@
                "cmd": "appctl restart",
                "order": 1
             },
-
             "add_user": {
                 "type": "custom",
                 "cmd": "userctl add",
@@ -95,12 +95,28 @@
             },
             "reset_password": {
                 "type": "custom",
-                "cmd": "userctl passwd",
+                "cmd": "userctl reset_passwd",
                 "timeout": 180,
                 "service_params": {
                     "user_name": {{service_params.controller_sp.user_name}},
                     "password": {{service_params.controller_sp.password}},
                     "new_password": {{service_params.controller_sp.new_password}}
+                }
+            },
+            "install_software": {
+                "type": "custom",
+                "cmd": "softwarectl install",
+                "timeout": 3600,
+                "service_params": {
+                    "software": {{service_params.controller_sp.software}}
+                }
+            },
+            "uninstall_software": {
+                "type": "custom",
+                "cmd": "softwarectl uninstall",
+                "timeout": 600,
+                "service_params": {
+                    "software": {{service_params.controller_sp.software}}
                 }
             }
         }
@@ -110,7 +126,7 @@
         "container": {
             "type": "kvm",
             "zone": "nscc",
-            "image": "img-i1fgphgm"
+            "image": "img-s17drl1r"
         },
         "net": {
             "vxnet": false,
@@ -148,7 +164,8 @@
         "admin_password": {{env.admin.password}},
         "admin_user_id": {{env.admin.user_id}},
         "admin_group_id": {{env.admin.group_id}},
-        "nas_path": {{env.nas_path}}
+        "nas_path": {{env.nas_path}},
+        "software": {{env.software}}
     },
     "display_tabs" : {
         "cluster_user" : {

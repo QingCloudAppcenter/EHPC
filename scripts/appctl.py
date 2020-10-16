@@ -8,7 +8,6 @@ from constants import (
     ACTION_APP_STOP,
     ACTION_APP_RESTART,
     ACTION_HEALTH_CHECK,
-    ACTION_USER_ADD_ADMIN,
     ACTION_METADATA_RELOAD,
     ROLE_CONTROLLER,
     ROLE_COMPUTE,
@@ -20,9 +19,12 @@ from common import (
     run_shell,
     get_role,
     ArgsParser,
+    get_cluster_info,
 )
 from host_utils import generate_hosts, set_hostname
 from slurm_utils import generate_conf
+from softwarectl import init_software
+from userctl import add_admin_user
 
 ROLE_SERVICES = {
     ROLE_CONTROLLER: ["slurmctld", "slapd"],
@@ -42,13 +44,14 @@ def setup():
     logger.info("Setup hostname...")
     set_hostname()
     logger.info("setup done.")
+    return 0
 
 
 def start():
     role = get_role()
     # start before
     if role == ROLE_CONTROLLER:
-        logger.info("Generating hosts for slurm configurations...")
+        logger.info("Generating slurm configurations...")
         generate_conf()
     else:
         for f in clear_files[role]:
@@ -62,13 +65,23 @@ def start():
             run_shell("systemctl start {}".format(service))
     else:
         logger.error("Un-support role[%s].", role)
-        sys.exit(1)
+        return 1
 
     # start post
     if role == ROLE_CONTROLLER:
+        logger.info("create admin dirs..")
+        cluster_info = get_cluster_info()
+        run_shell("mkdir -p /home/{}/opt".format(cluster_info["admin_user"]))
+        run_shell("mkdir -p /home/{}/home/".format(cluster_info["admin_user"]))
+        run_shell("mkdir -p /home/{}/data/".format(cluster_info["admin_user"]))
+
         # create admin user
-        run_shell("userctl {}".format(ACTION_USER_ADD_ADMIN))
+        add_admin_user()
+
+        # install software
+        return init_software()
     logger.info("%s started.", role)
+    return 0
 
 
 def stop():
@@ -78,7 +91,8 @@ def stop():
             run_shell("systemctl stop {}".format(service))
     else:
         logger.error("Un-support role[%s].", role)
-        sys.exit(1)
+        return 1
+    return 0
 
 
 def restart():
@@ -88,15 +102,15 @@ def restart():
             run_shell("systemctl restart {}".format(service))
     else:
         logger.error("Un-support role[%s].", role)
-        sys.exit(1)
+        return 1
     logger.info("%s re-started.", role)
+    return 0
 
 
 def check_service_status(service):
     retcode = run_shell("systemctl is-active {}".format(service), without_log=True)
     if retcode != 0:
-        logger.error("the {} service is not health.".format(service))
-        sys.exit(retcode)
+        logger.error("the service[%s] is not health[code: %s].", service, retcode)
     return retcode
 
 
@@ -104,8 +118,10 @@ def health_check():
     role = get_role()
     services = ROLE_SERVICES.get(role, "")
     for service in services:
-        check_service_status(service)
-    sys.exit(0)
+        ret = check_service_status(service)
+        if ret != 0:
+            return ret
+    return 0
 
 
 def metadata_reload():
@@ -120,6 +136,7 @@ def metadata_reload():
         # TODO: 多controller节点时，只在一个master节点执行此命令即可
         logger.info("re-config slurm configuration for cluster..")
         run_shell("systemctl restart slurmctld")
+    return 0
 
 
 def help():
@@ -139,15 +156,16 @@ ACTION_MAP = {
 
 
 def main(argv):
-    paeser = ArgsParser()
-    ret = paeser.parse(argv)
+    parser = ArgsParser()
+    ret = parser.parse(argv)
     if not ret:
         sys.exit(40)
 
-    if paeser.action in ACTION_MAP:
-        ACTION_MAP[paeser.action]()
+    if parser.action in ACTION_MAP:
+        ret = ACTION_MAP[parser.action]()
+        sys.exit(ret)
     else:
-        logger.error("Un-support action:[%s], exit!", paeser.action)
+        logger.error("Un-support action:[%s], exit!", parser.action)
         sys.exit(40)
 
 

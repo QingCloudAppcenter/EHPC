@@ -3,7 +3,7 @@
 from common import run_shell, backup, get_hostname
 from constants import (
     HOSTS,
-    WORK_DIR,
+    APP_HOME,
     BACKUP_HOSTS_CMD,
     HOSTS_INFO_FILE,
 )
@@ -21,7 +21,7 @@ def generate_hosts():
                 break
             line = old.readline()
 
-    tmp_hosts = "{}/hosts".format(WORK_DIR)
+    tmp_hosts = "{}/hosts".format(APP_HOME)
     with open(tmp_hosts, "w") as hosts:
         for line in ori_hosts:
             hosts.write(line)

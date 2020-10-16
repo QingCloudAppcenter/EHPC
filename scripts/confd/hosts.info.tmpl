@@ -1,7 +1,7 @@
 
 
 # Login
-{{range $dir := lsdir "/hosts/login/"}}{{$ip := printf "/hosts/login/%s/ip" $dir}}{{getv $ip}}    login
+{{range $dir := lsdir "/hosts/login"}}{{$sid := printf "/hosts/login/%s/sid" $dir}}{{$ip := printf "/hosts/logins/%s/ip" $dir}}{{getv $ip}}    login{{getv $sid}}
 {{end}}
 
 # Controller
