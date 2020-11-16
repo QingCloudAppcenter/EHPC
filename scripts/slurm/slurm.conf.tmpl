@@ -76,16 +76,17 @@ SlurmctldDebug=info
 SlurmctldLogFile=/var/log/slurm/slurmctld.log
 SlurmdDebug=info
 SlurmdLogFile=/var/log/slurm/slurmd.log
-JobCompType=jobcomp/none
-#JobCompLoc=
+
+JobCompType=jobcomp/filetxt
+JobCompLoc=/var/log/slurm/job_completions
 #
 # ACCOUNTING
-#JobAcctGatherType=jobacct_gather/linux
-#JobAcctGatherFrequency=30
+JobAcctGatherType=jobacct_gather/linux
+#obAcctGatherFrequency=30
 #
-#AccountingStorageType=accounting_storage/slurmdbd
+AccountingStorageType=accounting_storage/filetxt
 #AccountingStorageHost=
-#AccountingStorageLoc=
+AccountingStorageLoc=/var/log/slurm/accounting
 #AccountingStoragePass=
 #AccountingStorageUser=
 

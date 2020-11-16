@@ -286,7 +286,7 @@
             "key": "software",
             "label": "Software",
             "description": "The software that need to install, eg: {name:s1, source:xx, installer:xx}, {..}, ..",
-            "default": "",
+            "default": "[]",
             "type": "string",
             "required": "no"
         }]
