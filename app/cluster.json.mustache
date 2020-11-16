@@ -2,96 +2,183 @@
     "name": {{cluster.name}},
     "description": {{cluster.description}},
     "vxnet": {{cluster.vxnet}},
-    "multi_zone_policy": "round_robin",
-    "upgrade_policy": [],
-    "upgrading_policy": "parallel",
+    "nas_id": {{cluster.nas_id}},
     "nodes": [{
         "role":"login",
+        "os_reset": false,
         "container": {
-            "type": "lxc",
-            "zone": "sh1",
-            "image": "img-9otlqzkw"
+            "type": "kvm",
+            "zone": "nscc",
+            "image": "img-s17drl1r"
+        },
+        "net": {
+            "vxnet": true,
+            "ib": true,
+            "base": false
         },
         "instance_class": {{cluster.login.instance_class}},
-        "count": {{cluster.login.count}},
+        "nas_mount_point": {{cluster.login.nas_mount_point}},
         "cpu": {{cluster.login.cpu}},
+        "cpu_model": {{cluster.login.cpu_model}},
         "memory": {{cluster.login.memory}},
-        "net": {
-            "vxnet": true,
-            "ib": true,
-            "base": true
-        },
-        "services": {},
-        "advanced_actions": [],
-        "health_check": {},
-        "monitor": {}
+        "count": {{cluster.login.count}},
+        "user_access": true,
+        "advanced_actions": ["scale_horizontal", "associate_eip"],
+        "services": {
+            "init": {
+                "cmd": "appctl init"
+            },
+            "start": {
+                "cmd": "appctl start",
+                "order": 2
+            },
+            "stop": {
+                "cmd": "appctl stop",
+                "order": 1
+            },
+            "restart": {
+               "cmd": "appctl restart",
+               "order": 2
+            }
+        }
     }, {
         "role":"controller",
+        "os_reset": false,
         "container": {
-            "type": "lxc",
-            "zone": "sh1",
-            "image": "img-9otlqzkw"
+            "type": "kvm",
+            "zone": "nscc",
+            "image": "img-s17drl1r"
+        },
+        "net": {
+            "vxnet": false,
+            "ib": true,
+            "base": false
         },
         "instance_class": {{cluster.controller.instance_class}},
+        "nas_mount_point": {{cluster.login.nas_mount_point}},
         "count": {{cluster.controller.count}},
         "cpu": {{cluster.controller.cpu}},
+        "cpu_model": {{cluster.controller.cpu_model}},
         "memory": {{cluster.controller.memory}},
-        "net": {
-            "vxnet": true,
-            "ib": true,
-            "base": true
-        },
         "services": {
+            "init": {
+                "cmd": "appctl init"
+            },
             "start": {
-                "cmd": "systemctl start slurmctld",
+                "cmd": "appctl start",
                 "order": 1
             },
             "stop": {
-                "cmd": "systemctl stop slurmctld",
+                "cmd": "appctl stop",
                 "order": 2
             },
             "restart": {
-               "cmd": "systemctl restart slurmctld"
+               "cmd": "appctl restart",
+               "order": 1
+            },
+            "add_user": {
+                "type": "custom",
+                "cmd": "userctl add",
+                "timeout": 180,
+                "service_params": {
+                    "user_name": {{service_params.controller_sp.user_name}},
+                    "password": {{service_params.controller_sp.password}}
+                }
+            },
+            "delete_user": {
+                "type": "custom",
+                "cmd": "userctl delete",
+                "timeout": 180,
+                "service_params": {
+                    "user_name": {{service_params.controller_sp.user_name}}
+                }
+            },
+            "reset_password": {
+                "type": "custom",
+                "cmd": "userctl reset_passwd",
+                "timeout": 180,
+                "service_params": {
+                    "user_name": {{service_params.controller_sp.user_name}},
+                    "password": {{service_params.controller_sp.password}},
+                    "new_password": {{service_params.controller_sp.new_password}}
+                }
+            },
+            "install_software": {
+                "type": "custom",
+                "cmd": "softwarectl install",
+                "timeout": 3600,
+                "service_params": {
+                    "software": {{service_params.controller_sp.software}}
+                }
+            },
+            "uninstall_software": {
+                "type": "custom",
+                "cmd": "softwarectl uninstall",
+                "timeout": 600,
+                "service_params": {
+                    "software": {{service_params.controller_sp.software}}
+                }
+            }
+        }
+    },{
+        "role":"compute",
+        "os_reset": false,
+        "container": {
+            "type": "kvm",
+            "zone": "nscc",
+            "image": "img-s17drl1r"
+        },
+        "net": {
+            "vxnet": false,
+            "ib": true,
+            "base": false
+        },
+        "instance_class": {{cluster.compute.instance_class}},
+        "nas_mount_point": {{cluster.login.nas_mount_point}},
+        "count": {{cluster.compute.count}},
+        "cpu": {{cluster.compute.cpu}},
+        "cpu_model": {{cluster.compute.cpu_model}},
+        "memory": {{cluster.compute.memory}},
+        "services": {
+            "init": {
+                "cmd": "appctl init"
+            },
+            "start": {
+                "cmd": "appctl start",
+                "order": 2
+            },
+            "stop": {
+                "cmd": "appctl start",
+                "order": 1
+            },
+            "restart": {
+               "cmd": "appctl restart",
+               "order": 2
             }
         },
-        "advanced_actions": [],
-        "vertical_scaling_policy": "sequential",
-        "health_check": {},
-        "monitor": {}
-    },{
-          "role":"compute",
-          "container": {
-              "type": "lxc",
-              "zone": "sh1",
-              "image": "img-9otlqzkw"
-          },
-          "instance_class": {{cluster.compute.instance_class}},
-          "count": {{cluster.compute.count}},
-          "cpu": {{cluster.compute.cpu}},
-          "memory": {{cluster.compute.memory}},
-          "net": {
-              "vxnet": false,
-              "ib": true,
-              "base": true
-          },
-          "services": {
-              "start": {
-                  "cmd": "systemctl start slurmd",
-                  "order": 1
-              },
-              "stop": {
-                  "cmd": "systemctl stop slurmd",
-                  "order": 2
-              },
-              "restart": {
-                 "cmd": "systemctl restart slurmd"
-              }
-          },
-          "vertical_scaling_policy": "sequential",
-          "health_check": {},
-          "monitor": {}
+        "vertical_scaling_policy": "parallel",
+        "advanced_actions": ["scale_horizontal"]
     }],
     "env": {
-        "replica.lag.time.max.ms": {{env.replica.lag.time.max.ms}}
+        "admin_user": {{env.admin.user}},
+        "admin_password": {{env.admin.password}},
+        "admin_user_id": {{env.admin.user_id}},
+        "admin_group_id": {{env.admin.group_id}},
+        "nas_path": {{env.nas_path}},
+        "software": {{env.software}}
+    },
+    "display_tabs" : {
+        "cluster_user" : {
+            "cmd" : "userctl list",
+            "roles_to_execute_on": ["controller"]
+        }
+    },
+    "health_check": {
+        "enable": true,
+        "interval_sec": 60,
+        "timeout_sec": 10,
+        "healthy_threshold": 3,
+        "unhealthy_threshold": 3,
+        "check_cmd": "appctl check"
     }
 }

@@ -1,0 +1,10 @@
+[template]
+src = "cluster.info.tmpl"
+dest = "/opt/app/conf/cluster.info"
+  keys = [
+    "/cluster/cluster_id",
+    "/host/role",
+    "/host/sid",
+    "/hosts/compute",
+    "env",
+]

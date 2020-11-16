@@ -1,0 +1,6 @@
+[template]
+src = "software.info.tmpl"
+dest = "/opt/app/conf/software.info"
+  keys = [
+    "env",
+]

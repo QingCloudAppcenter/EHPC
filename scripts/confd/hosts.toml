@@ -1,0 +1,8 @@
+[template]
+src = "hosts.info.tmpl"
+dest = "/opt/app/conf/hosts.info"
+  keys = [
+    "/host/role",
+    "/hosts/",
+]
+reload_cmd = "appctl reload"
