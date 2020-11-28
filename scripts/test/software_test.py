@@ -13,7 +13,7 @@ from ehpc.scripts.constants import (
 )
 
 SOFTWARE_WORKDIR = "/tmp/software"
-SOFTWARE_HOME_FMT = "/home/{}/opt"
+SOFTWARE_HOME_FMT = "{}/opt/apps/"
 
 
 # software format:

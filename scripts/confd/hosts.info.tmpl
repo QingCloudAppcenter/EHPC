@@ -1,11 +1,13 @@
 
-
 # Login
-{{range $dir := lsdir "/hosts/login"}}{{$sid := printf "/hosts/login/%s/sid" $dir}}{{$ip := printf "/hosts/logins/%s/ip" $dir}}{{getv $ip}}    login{{getv $sid}}
+{{range $dir := lsdir "/hosts/login"}}{{$sid := printf "/hosts/login/%s/sid" $dir}}{{$ip := printf "/hosts/login/%s/ip" $dir}}{{getv $ip}}    login{{getv $sid}}
 {{end}}
 
 # Controller
-{{range $dir := lsdir "/hosts/controller/"}}{{$ip := printf "/hosts/controller/%s/ip" $dir}}{{getv $ip}}    controller
+{{range $dir := lsdir "/hosts/controller/"}}{{$ip := printf "/hosts/controller/%s/ip" $dir}}{{$sid_key := printf "/hosts/controller/%s/sid" $dir}}{{$sid := getv $sid_key}}{{if eq $sid "1"}}{{getv $ip}} controller{{end}}{{end}}
+
+# Controller[1,2]
+{{range $dir := lsdir "/hosts/controller/"}}{{$sid := printf "/hosts/controller/%s/sid" $dir}}{{$ip := printf "/hosts/controller/%s/ip" $dir}}{{getv $ip}}    controller{{getv $sid}}
 {{end}}
 
 # Compute Nodes

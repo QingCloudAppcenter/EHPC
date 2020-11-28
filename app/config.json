@@ -147,7 +147,7 @@
                 "description": "Number of controller nodes for the cluster to create",
                 "type": "integer",
                 "default": 1,
-                "range": [1],
+                "range": [1,2],
                 "required": "yes"
             }]
         },{

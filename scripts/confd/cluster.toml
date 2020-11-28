@@ -6,5 +6,6 @@ dest = "/opt/app/conf/cluster.info"
     "/host/role",
     "/host/sid",
     "/hosts/compute",
+    "/hosts/controller",
     "env",
 ]

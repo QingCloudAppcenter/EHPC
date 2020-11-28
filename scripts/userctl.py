@@ -7,6 +7,7 @@ import traceback
 from common import (
     logger,
     get_cluster_info,
+    get_role,
     ArgsParser,
 )
 from constants import (
@@ -16,8 +17,10 @@ from constants import (
     ACTION_USER_DELETE,
     ACTION_RESET_PASSWORD,
 
+    ROLE_CONTROLLER,
     ADMIN_HOME_FMT,
     HOME_FMT,
+    MASTER_CONTROLLER_SID,
 )
 from ldap_utils import new_ldap_client
 
@@ -168,11 +171,11 @@ def reset_password(params):
 
 def get_home_dir(user_name, is_admin=False):
     cluster_info = get_cluster_info()
-    nas_path = cluster_info["nas_path"].strip("/")
+    nas_mount_point = cluster_info["nas_mount_point"]
     if is_admin:
-        return ADMIN_HOME_FMT.format(nas_path)
+        return ADMIN_HOME_FMT.format(nas_mount_point)
     else:
-        return HOME_FMT.format(nas_path, user_name)
+        return HOME_FMT.format(nas_mount_point, user_name)
 
 
 def help():
@@ -191,6 +194,11 @@ ACTION_MAP = {
 
 
 def main(argv):
+    role = get_role()
+    # 只在一个master controller节点执行此命令
+    cluster_info = get_cluster_info()
+    if role != ROLE_CONTROLLER or cluster_info["sid"] != MASTER_CONTROLLER_SID:
+        return
     parser = ArgsParser()
     ret = parser.parse(argv)
     if not ret:

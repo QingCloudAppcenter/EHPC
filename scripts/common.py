@@ -16,7 +16,11 @@ from constants import (
     LOG_DIR,
     LOG_FILE,
     COMPUTE_HOSTNAME_PREFIX,
+    CONTROLLER_HOSTNAME_PREFIX,
+    LOGIN_HOSTNAME_PREFIX,
     ROLE_COMPUTE,
+    ROLE_CONTROLLER,
+    ROLE_LOGIN,
     ACTION_PARAM_CONF,
     LOG_DEBUG_FLAG,
 )
@@ -118,6 +122,14 @@ def get_admin_user():
     return get_cluster_info()["admin_user"]
 
 
+def get_nas_mount_point():
+    return get_cluster_info()["nas_mount_point"]
+
+
+def get_cluster_name():
+    return get_cluster_info()["cluster_name"]
+
+
 def get_role():
     cluster_info = get_cluster_info()
     role = cluster_info.get("role")
@@ -133,6 +145,12 @@ def get_hostname():
     if role == ROLE_COMPUTE:
         cluster_info = get_cluster_info()
         return "{}{}".format(COMPUTE_HOSTNAME_PREFIX, cluster_info["sid"])
+    elif role == ROLE_CONTROLLER:
+        cluster_info = get_cluster_info()
+        return "{}{}".format(CONTROLLER_HOSTNAME_PREFIX, cluster_info["sid"])
+    elif role == ROLE_LOGIN:
+        cluster_info = get_cluster_info()
+        return "{}{}".format(LOGIN_HOSTNAME_PREFIX, cluster_info["sid"])
     else:
         return role
 
