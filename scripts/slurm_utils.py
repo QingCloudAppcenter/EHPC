@@ -13,7 +13,25 @@ from constants import (
     SLURM_CONF,
     SLURM_CONF_TMPL,
     COMPUTE_HOSTNAME_PREFIX,
+    CONTROLLER_HOSTNAME_PREFIX,
 )
+
+
+def get_ctl_machine():
+    cluster_info = get_cluster_info()
+    controllers = cluster_info["controllers"]
+    controllers.sort(key=lambda x: x[0])
+    # eg:
+    # SlurmctldHost=controller1(10.0.191.219)
+    # SlurmctldHost=controller2(10.0.3.169)
+    # 1st one must be controller1
+    ctl_machine = "SlurmctldHost={}{}({})".format(
+        CONTROLLER_HOSTNAME_PREFIX, controllers[0][0], controllers[0][1])
+    for controller in controllers:
+        if controller[0] > 1:
+            ctl_machine = "{}\nSlurmctldHost={}{}({})".format(ctl_machine,
+                CONTROLLER_HOSTNAME_PREFIX, controller[0], controller[1])
+    return ctl_machine
 
 
 def generate_conf():
@@ -53,6 +71,8 @@ def generate_conf():
     else:
         node_name = "{}{}-{}]".format(node_name, start_sid, last_sid)
 
+    ctl_machine = get_ctl_machine()
+
     # backup last slurm configuration
     if os_path.exists(SLURM_CONF):
         backup(BACKUP_SLURM_CONF_CMD)
@@ -64,6 +84,7 @@ def generate_conf():
             for line in tmpl.readlines():
                 if line:
                     line = line.format(CLUSTER_NAME=cls_name,
+                                       CONTROL_MACHINE=ctl_machine,
                                        CONTROLLER_RESOURCE=ctl_resource,
                                        COMPUTE_RESOURCE=cmp_resource,
                                        DEFAULT_NODE_NAME=node_name)

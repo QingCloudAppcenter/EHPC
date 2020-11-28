@@ -9,7 +9,8 @@
 # See the slurm.conf man page for more information.
 #
 ClusterName={CLUSTER_NAME}
-ControlMachine=controller
+{CONTROL_MACHINE}
+#ControlMachine=
 #ControlAddr=
 #BackupController=
 #BackupAddr=
@@ -22,7 +23,7 @@ SlurmctldParameters=enable_configless
 AuthType=auth/munge
 #JobCredentialPrivateKey=
 #JobCredentialPublicCertificate=
-StateSaveLocation=/var/spool/slurm/ctld
+StateSaveLocation=/opt/slurm/state_save_loc/{CLUSTER_NAME}/
 SlurmdSpoolDir=/var/spool/slurm/d
 SwitchType=switch/none
 MpiDefault=none

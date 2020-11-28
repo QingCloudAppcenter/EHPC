@@ -9,7 +9,7 @@
         "container": {
             "type": "kvm",
             "zone": "nscc",
-            "image": "img-s17drl1r"
+            "image": "img-01owxmj5"
         },
         "net": {
             "vxnet": true,
@@ -47,7 +47,7 @@
         "container": {
             "type": "kvm",
             "zone": "nscc",
-            "image": "img-s17drl1r"
+            "image": "img-01owxmj5"
         },
         "net": {
             "vxnet": false,
@@ -126,7 +126,7 @@
         "container": {
             "type": "kvm",
             "zone": "nscc",
-            "image": "img-s17drl1r"
+            "image": "img-01owxmj5"
         },
         "net": {
             "vxnet": false,
@@ -165,6 +165,7 @@
         "admin_user_id": {{env.admin.user_id}},
         "admin_group_id": {{env.admin.group_id}},
         "nas_path": {{env.nas_path}},
+        "nas_mount_point": {{cluster.login.nas_mount_point}},
         "software": {{env.software}}
     },
     "display_tabs" : {

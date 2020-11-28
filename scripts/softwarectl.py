@@ -9,6 +9,8 @@ from common import (
     ArgsParser,
     run_shell,
     get_admin_user,
+    get_role,
+    get_cluster_info,
     json_load,
     json_loads,
 )
@@ -17,11 +19,11 @@ from constants import (
     ACTION_PARAM_CONF,
     ACTION_SOFTWARE_INSTALL,
     ACTION_SOFTWARE_UNINSTALL,
-
+    MASTER_CONTROLLER_SID,
 )
 
-SOFTWARE_WORKDIR_FMT = "/home/{}/tmp/software/{}"
-SOFTWARE_HOME_FMT = "/home/{}/opt"
+SOFTWARE_WORKDIR_FMT = "{}/tmp/software/{}"
+SOFTWARE_HOME_FMT = "{}/opt/apps/"
 
 
 def init_software():
@@ -49,7 +51,8 @@ def init_software():
 #   }]
 def install(software_list, ignore_exist=False):
     logger.info("install software[%s]..", software_list)
-    software_home = SOFTWARE_HOME_FMT.format(get_admin_user())
+    nas_mount_point = get_cluster_info()["nas_mount_point"]
+    software_home = SOFTWARE_HOME_FMT.format(nas_mount_point)
     if software_list:
         run_shell("mkdir -p {}".format(software_home))
 
@@ -89,7 +92,8 @@ def _install(software, source, software_home, installer=None):
     logger.info("Do install software[%s] from source[%s]..", software, source)
 
     package = source.split("/")[-1]
-    workdir = SOFTWARE_WORKDIR_FMT.format(get_admin_user(), software)
+    nas_mount_point = get_cluster_info()["nas_mount_point"]
+    workdir = SOFTWARE_WORKDIR_FMT.format(nas_mount_point, software)
     package_path = "{}/{}".format(workdir, package)
 
     try:
@@ -112,7 +116,7 @@ def _install(software, source, software_home, installer=None):
         else:
             f = "bash {}/install.sh".format(un_tar_dir)
             installer = f if os.path.exists(f) else \
-                "mv {} {}/".format(un_tar_dir, software_home)
+                "cp -nrf {} {}/".format(un_tar_dir, software_home)
 
         run_shell("export SOFTWARE_HOME={} && {}".format(software_home, installer), timeout=120)
 
@@ -133,7 +137,8 @@ def _install(software, source, software_home, installer=None):
 #   }]
 def uninstall(software):
     logger.info("uninstall software[%s]..", software)
-    software_home = SOFTWARE_HOME_FMT.format(get_admin_user())
+    nas_mount_point = get_cluster_info()["nas_mount_point"]
+    software_home = SOFTWARE_HOME_FMT.format(nas_mount_point)
     for s in software:
         if not os.path.exists("{}/{}".format(software_home, s["name"])):
             logger.error("The software[%s] not exist!", s["name"])
@@ -182,6 +187,13 @@ ACTION_MAP = {
 # could use env [SOFTWARE_HOME] in install or uninstall script
 def main(argv):
     try:
+        # 只在一个master controller节点执行此命令
+        role = get_role()
+        cluster_info = get_cluster_info()
+        if role != ROLE_CONTROLLER or \
+                cluster_info["sid"] != MASTER_CONTROLLER_SID:
+            return
+
         parser = ArgsParser()
         ret = parser.parse(argv)
         if not ret:

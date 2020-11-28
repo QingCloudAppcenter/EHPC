@@ -13,6 +13,7 @@ from constants import (
     ROLE_COMPUTE,
     ROLE_LOGIN,
     SLURM_CONF,
+    MASTER_CONTROLLER_SID,
 )
 from common import (
     logger,
@@ -20,8 +21,10 @@ from common import (
     get_role,
     ArgsParser,
     get_cluster_info,
+    get_nas_mount_point,
+    get_cluster_name,
 )
-from host_utils import generate_hosts, set_hostname
+from host_utils import generate_hosts, set_hostname, generate_hpcmodulefiles
 from slurm_utils import generate_conf
 from softwarectl import init_software
 from userctl import add_admin_user
@@ -43,12 +46,22 @@ def setup():
 
     logger.info("Setup hostname...")
     set_hostname()
+
+    logger.info("Setup hpc module-files...")
+    generate_hpcmodulefiles()
     logger.info("setup done.")
     return 0
 
 
 def start():
     role = get_role()
+    nas_mount_point = get_nas_mount_point()
+    cluster_name = get_cluster_name()
+    # mkdir /nas_mount_point/opt/slurm/state_save_loc for StateSaveLocation
+    run_shell("mkdir -p {}/opt/slurm/state_save_loc/{}/".format(nas_mount_point,
+                                                                cluster_name))
+    run_shell("ln -sf {}/opt/slurm/ /opt/slurm".format(nas_mount_point))
+
     # start before
     if role == ROLE_CONTROLLER:
         logger.info("Generating slurm configurations...")
@@ -68,12 +81,13 @@ def start():
         return 1
 
     # start post
-    if role == ROLE_CONTROLLER:
+    cluster_info = get_cluster_info()
+    nas_mount_point = get_nas_mount_point()
+    if role == ROLE_CONTROLLER and cluster_info["sid"] == MASTER_CONTROLLER_SID:
         logger.info("create admin dirs..")
-        cluster_info = get_cluster_info()
-        run_shell("mkdir -p /home/{}/opt".format(cluster_info["admin_user"]))
-        run_shell("mkdir -p /home/{}/home/".format(cluster_info["admin_user"]))
-        run_shell("mkdir -p /home/{}/data/".format(cluster_info["admin_user"]))
+        run_shell("mkdir -p {}/opt".format(nas_mount_point))
+        run_shell("mkdir -p {}/home/".format(nas_mount_point))
+        run_shell("mkdir -p {}/data/".format(nas_mount_point))
 
         # create admin user
         add_admin_user()

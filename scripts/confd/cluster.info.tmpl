@@ -1,11 +1,13 @@
 {
     "cluster_name": "{{getv "/cluster/cluster_id"}}",
     "sid": "{{getv "/host/sid"}}",
-    "sids": "{{range $dir := lsdir "/hosts/compute/"}}{{$sid := printf "/hosts/compute/%s/sid" $dir}}{{getv $sid}},{{end}}",
+    "sids": "{{range  $idx, $dir := lsdir "/hosts/compute/"}}{{$sid := printf "/hosts/compute/%s/sid" $dir}}{{getv $sid}},{{end}}",
+    "controllers": [{{range $idx,$dir := lsdir "/hosts/controller/"}}{{$sid := printf "/hosts/controller/%s/sid" $dir}}{{$ip := printf "/hosts/controller/%s/ip" $dir}}{{if ne $idx 0}},{{end}}[{{getv $sid}},"{{getv $ip}}"]{{end}}],
     "role": "{{getv "/host/role"}}",
     "admin_user": "{{getv "/env/admin_user"}}",
     "admin_uid": "{{getv "/env/admin_user_id"}}",
     "admin_password": "{{getv "/env/admin_password"}}",
     "admin_gid": "{{getv "/env/admin_group_id"}}",
-    "nas_path": "{{getv "/env/nas_path"}}"
+    "nas_path": "{{getv "/env/nas_path"}}",
+    "nas_mount_point": "{{getv "/env/nas_mount_point"}}"
 }

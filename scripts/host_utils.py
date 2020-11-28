@@ -1,11 +1,14 @@
 #!/usr/bin/env python
 
-from common import run_shell, backup, get_hostname
+from common import run_shell, backup, get_hostname, get_nas_mount_point
 from constants import (
     HOSTS,
     APP_HOME,
     BACKUP_HOSTS_CMD,
     HOSTS_INFO_FILE,
+    HPC_MODULE_FILES_TMPL,
+    HPC_DEFAULT_MODULE_FILE,
+    HPC_MODULE_FILES,
 )
 
 
@@ -34,3 +37,22 @@ def generate_hosts():
 def set_hostname():
     hostname = get_hostname()
     run_shell("hostnamectl set-hostname {}".format(hostname))
+
+
+def generate_hpcmodulefiles():
+    # prepare path for ehpc cluster modulefiles
+    nas_mount_point = get_nas_mount_point()
+    run_shell("mkdir -p {}/opt/modulefiles/".format(nas_mount_point))
+    dft_modulefiles_path = "{}/opt/modulefiles/default".format(nas_mount_point)
+    run_shell("cp {} {}".format(HPC_DEFAULT_MODULE_FILE, dft_modulefiles_path))
+
+    # replace slurm.conf.template
+    tmp_file = "{}/hpcmodulefiles.tmp".format(APP_HOME)
+    with open(tmp_file, "w") as conf:
+        with open(HPC_MODULE_FILES_TMPL, "r") as tmpl:
+            for line in tmpl.readlines():
+                if line and line.find("NAS_MOUNT_POINT") != -1:
+                    line = line.format(NAS_MOUNT_POINT=nas_mount_point)
+                conf.write(line)
+
+    run_shell("mv {} {}".format(tmp_file, HPC_MODULE_FILES))

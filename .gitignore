@@ -1,2 +1,9 @@
 .DS_Store
 */.DS_Store
+scripts/build/
+scripts/dist/
+*.spec
+app/app.zip
+scripts/build.sh
+scripts/synctl.sh
+
