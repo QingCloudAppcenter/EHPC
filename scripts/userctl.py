@@ -113,7 +113,7 @@ def delete(params):
         logger.error("required params: user_name[%s].", user_name)
         sys.exit(40)
 
-    if user_name == get_cluster_info()["user"]:
+    if user_name == get_cluster_info()["admin_user"]:
         logger.error("The admin user[%s] can not be deleted.", user_name)
         sys.exit(46)
 
@@ -197,14 +197,21 @@ def main(argv):
     role = get_role()
     # 只在一个master controller节点执行此命令
     cluster_info = get_cluster_info()
-    if role != ROLE_CONTROLLER or cluster_info["sid"] != MASTER_CONTROLLER_SID:
-        return
     parser = ArgsParser()
     ret = parser.parse(argv)
     if not ret:
         sys.exit(40)
 
     if parser.action in ACTION_MAP:
+        if parser.action != ACTION_USER_LIST and \
+                (role != ROLE_CONTROLLER or
+                 str(cluster_info["sid"]) != str(MASTER_CONTROLLER_SID)):
+            # logger.error("return action[%s], role[%s], sid[%s]." %
+            #              (parser.action, role, cluster_info["sid"]))
+            return
+        # else:
+        #     logger.error("action[%s], role[%s], sid[%s]." %
+        #                  (parser.action, role, cluster_info["sid"]))
         ACTION_MAP[parser.action](parser.directive) if parser.directive \
             else ACTION_MAP[parser.action]()
     else:

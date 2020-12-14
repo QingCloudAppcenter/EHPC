@@ -95,5 +95,6 @@ AccountingStorageLoc=/var/log/slurm/accounting
 NodeName=controller {CONTROLLER_RESOURCE}
 NodeName={DEFAULT_NODE_NAME} {COMPUTE_RESOURCE}
 
+# Partitions
 PartitionName=controller Nodes=controller Default=NO MaxTime=INFINITE State=UP
-PartitionName=debug Nodes={DEFAULT_NODE_NAME} Default=YES MaxTime=INFINITE State=UP
+PartitionName=debug Nodes={DEFAULT_NODE_NAME} Default=YES MinNodes=1 AllowGroups=ALL PriorityJobFactor=1 PriorityTier=1 DisableRootJobs=NO RootOnly=NO Hidden=NO GraceTime=0 PreemptMode=OFF ReqResv=NO AllowAccounts=ALL AllowQos=ALL LLN=NO ExclusiveUser=NO OverSubscribe=NO OverTimeLimit=0 State=UP

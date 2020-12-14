@@ -25,7 +25,10 @@ from common import (
     get_cluster_name,
 )
 from host_utils import generate_hosts, set_hostname, generate_hpcmodulefiles
-from slurm_utils import generate_conf
+from slurm_utils import (
+    generate_slurm_conf,
+    update_slurm_conf,
+)
 from softwarectl import init_software
 from userctl import add_admin_user
 
@@ -65,7 +68,7 @@ def start():
     # start before
     if role == ROLE_CONTROLLER:
         logger.info("Generating slurm configurations...")
-        generate_conf()
+        generate_slurm_conf()
     else:
         for f in clear_files[role]:
             if path.exists(f):
@@ -83,7 +86,8 @@ def start():
     # start post
     cluster_info = get_cluster_info()
     nas_mount_point = get_nas_mount_point()
-    if role == ROLE_CONTROLLER and cluster_info["sid"] == MASTER_CONTROLLER_SID:
+    if role == ROLE_CONTROLLER and \
+            int(cluster_info["sid"]) == MASTER_CONTROLLER_SID:
         logger.info("create admin dirs..")
         run_shell("mkdir -p {}/opt".format(nas_mount_point))
         run_shell("mkdir -p {}/home/".format(nas_mount_point))
@@ -144,12 +148,12 @@ def metadata_reload():
 
     role = get_role()
     if role == ROLE_CONTROLLER:
-        logger.info("generate slurm conf for reloading metadata..")
-        generate_conf()
+        logger.info("update slurm conf for reloading metadata..")
+        update_slurm_conf()
 
         # TODO: 多controller节点时，只在一个master节点执行此命令即可
         logger.info("re-config slurm configuration for cluster..")
-        run_shell("systemctl restart slurmctld")
+        run_shell("scontrol reconfigure")
     return 0
 
 

@@ -9,7 +9,7 @@
         "container": {
             "type": "kvm",
             "zone": "nscc",
-            "image": "img-01owxmj5"
+            "image": "img-y01axmq5"
         },
         "net": {
             "vxnet": true,
@@ -47,7 +47,7 @@
         "container": {
             "type": "kvm",
             "zone": "nscc",
-            "image": "img-01owxmj5"
+            "image": "img-y01axmq5"
         },
         "net": {
             "vxnet": false,
@@ -98,7 +98,7 @@
                 "cmd": "userctl reset_passwd",
                 "timeout": 180,
                 "service_params": {
-                    "user_name": {{service_params.controller_sp.user_name}},
+                    "username": {{service_params.controller_sp.user_name}},
                     "password": {{service_params.controller_sp.password}},
                     "new_password": {{service_params.controller_sp.new_password}}
                 }
@@ -118,6 +118,78 @@
                 "service_params": {
                     "software": {{service_params.controller_sp.software}}
                 }
+            },
+            "add_queue": {
+                "type": "custom",
+                "cmd": "queuectl add_queue",
+                "timeout": 600,
+                "service_params": {
+                    "queue": {{service_params.controller_sp.queue}}
+                }
+            },
+            "del_queue": {
+                "type": "custom",
+                "cmd": "queuectl del_queue",
+                "timeout": 3600,
+                "service_params": {
+                    "queue": {{service_params.controller_sp.queue}}
+                }
+            },
+            "modify_queue": {
+                "type": "custom",
+                "cmd": "queuectl modify_queue",
+                "timeout": 600,
+                "service_params": {
+                    "queue": {{service_params.controller_sp.queue}}
+                }
+            },
+            "create_job_file": {
+                "type": "custom",
+                "cmd": "jobctl create_job_file",
+                "timeout": 600,
+                "service_params": {
+                    "job": {{service_params.controller_sp.job}}
+                }
+            },
+            "submit_job": {
+                "type": "custom",
+                "cmd": "jobctl submit",
+                "timeout": 600,
+                "service_params": {
+                    "job": {{service_params.controller_sp.job}}
+                }
+            },
+            "start_job": {
+                "type": "custom",
+                "cmd": "jobctl start",
+                "timeout": 600,
+                "service_params": {
+                    "job": {{service_params.controller_sp.job}}
+                }
+            },
+            "get_job": {
+                "type": "custom",
+                "cmd": "jobctl get",
+                "timeout": 600,
+                "service_params": {
+                    "job": {{service_params.controller_sp.job}}
+                }
+            },
+            "stop_job": {
+                "type": "custom",
+                "cmd": "jobctl stop",
+                "timeout": 600,
+                "service_params": {
+                    "job": {{service_params.controller_sp.job}}
+                }
+            },
+            "del_job": {
+                "type": "custom",
+                "cmd": "jobctl del",
+                "timeout": 600,
+                "service_params": {
+                    "job": {{service_params.controller_sp.job}}
+                }
             }
         }
     },{
@@ -126,7 +198,7 @@
         "container": {
             "type": "kvm",
             "zone": "nscc",
-            "image": "img-01owxmj5"
+            "image": "img-y01axmq5"
         },
         "net": {
             "vxnet": false,
@@ -171,6 +243,10 @@
     "display_tabs" : {
         "cluster_user" : {
             "cmd" : "userctl list",
+            "roles_to_execute_on": ["controller"]
+        },
+        "get_queue" : {
+            "cmd" : "queuectl get_queue",
             "roles_to_execute_on": ["controller"]
         }
     },

@@ -1,0 +1,204 @@
+{
+  "type":"array",
+  "properties":[
+    {
+      "type":"array",
+      "description":"HPC login properties",
+      "key":"cluster",
+      "properties":[
+        {
+          "description":"The name of the HPC cluster service",
+          "default":"my_hpc",
+          "required":"yes",
+          "label":"Name",
+          "key":"name",
+          "type":"string"
+        },
+        {
+          "description":"The description of the HPC cluster service",
+          "default":"",
+          "required":"no",
+          "label":"Description",
+          "key":"description",
+          "type":"string"
+        },
+        {
+          "description":"Choose a vxnet to join",
+          "default":"",
+          "required":"yes",
+          "label":"VxNet",
+          "key":"vxnet",
+          "type":"string"
+        },
+        {
+          "description":"nas id",
+          "default":"pu46atpam",
+          "required":"yes",
+          "label":"NAS_ID",
+          "key":"nas_id",
+          "type":"string"
+        },
+        {
+          "properties":[
+            {
+              "description":"The instance type for the cluster to run, such as high performance, high performance plus",
+              "default":6,
+              "required":"yes",
+              "label":"Instance Class",
+              "range":[
+                6
+              ],
+              "key":"instance_class",
+              "type":"integer"
+            },
+            {
+              "description":"Cpus of each node",
+              "default":1,
+              "required":"yes",
+              "label":"CPU",
+              "range":[
+                1,
+                2,
+                4,
+                8,
+                16,
+                32,
+                64
+              ],
+              "key":"cpu",
+              "type":"integer"
+            },
+            {
+              "description":"CPU Microarchitecture",
+              "default":"IvyBridge",
+              "required":"yes",
+              "label":"CPU Microarchitecture",
+              "range":[
+                "",
+                "Westmere",
+                "SandyBridge",
+                "IvyBridge",
+                "Haswell",
+                "Broadwell",
+                "Skylake",
+                "CascadeLake"
+              ],
+              "key":"cpu_model",
+              "type":"string"
+            },
+            {
+              "description":"Memory of each node (in MiB)",
+              "default":2048,
+              "required":"yes",
+              "label":"Memory",
+              "range":[
+                1024,
+                2048,
+                4096,
+                8192,
+                16384
+              ],
+              "key":"memory",
+              "type":"integer"
+            },
+            {
+              "key":"count",
+              "label":"LoginCount",
+              "description":"Number of login nodes for the cluster to create",
+              "required":"yes",
+              "default":1,
+              "min": 1,
+              "max": 99,
+              "type":"integer"
+            },
+            {
+              "description":"The mount point of lustre",
+              "default":"/mnt",
+              "required":"no",
+              "label":"LustreMountPoint",
+              "key":"nas_mount_point",
+              "type":"string"
+            }
+          ],
+          "type":"array",
+          "description":"HPC login node",
+          "key":"login",
+          "label":"Login"
+        }
+      ]
+    },
+    {
+        "key": "service_params",
+        "description": "Custom service configuration properties",
+        "type": "array",
+        "properties": [{
+            "key": "loginnode",
+            "description": "Custom service the role(login) configuration properties",
+            "type": "array",
+            "properties": [{
+                    "key": "username",
+                    "label": "User Name",
+                    "description": "The name of the user",
+                    "type": "string",
+                    "default": "",
+                    "required": "yes"
+                },{
+                    "key": "password",
+                    "label": "Password",
+                    "description": "password of the user",
+                    "type": "password",
+                    "required": "yes"
+                },{
+                    "key": "new_password",
+                    "label": "New Password",
+                    "description": "new password of the user to reset",
+                    "type": "password",
+                    "required": "yes"
+                }
+            ]
+        }]
+    },
+    {
+        "key": "env",
+        "description": "HPC service properties",
+        "type": "array",
+        "properties": [{
+            "key": "admin.user",
+            "label": "Cluster User",
+            "description": "The cluster user",
+            "default": "admin",
+            "type": "string",
+            "pattern": "[a-z][a-z0-9]{3,12}",
+            "required": "yes"
+        },{
+            "key": "admin.password",
+            "label": "Cluster User Password",
+            "description": "The cluster user password",
+            "type": "password",
+            "pattern": "[A-Za-z0-9!@#$%^&*()]{4,32}",
+            "required": "yes"
+        },{
+            "key": "admin.user_id",
+            "label": "Admin User UID",
+            "description": "The uid of admin user",
+            "type": "integer",
+            "default": 45507,
+            "required": "yes"
+        },{
+            "key": "admin.group_id",
+            "label": "Admin User GID",
+            "description": "The gid of admin user",
+            "type": "integer",
+            "default": 45507,
+            "required": "yes"
+        },{
+            "key": "nas_path",
+            "label": "NAS Path",
+            "description": "The nas path of lustre to mount.",
+            "default": "",
+            "type": "string",
+            "required": "yes"
+        }]
+    }
+  ]
+}

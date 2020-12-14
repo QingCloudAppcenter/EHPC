@@ -15,6 +15,7 @@ from constants import (
     BACKUP_DIR,
     LOG_DIR,
     LOG_FILE,
+    HOST_PREFIX,
     COMPUTE_HOSTNAME_PREFIX,
     CONTROLLER_HOSTNAME_PREFIX,
     LOGIN_HOSTNAME_PREFIX,
@@ -23,6 +24,8 @@ from constants import (
     ROLE_LOGIN,
     ACTION_PARAM_CONF,
     LOG_DEBUG_FLAG,
+    NODES,
+    NODEID_LIST,
 )
 
 CMD_CHECK_INTERVAL = 2  # seconds
@@ -69,6 +72,21 @@ def run_shell(cmd, without_log=False, **kwargs):
         sys.exit(1)
 
 
+# just wrapper _run_shell for exporting it
+def exec_shell(cmd, without_log=False, **kwargs):
+    if type(cmd) not in [str, list]:
+        logger.error("The type of cmd[%s] is incorrect.", cmd)
+        return 1
+    if not without_log:
+        logger.info("Run cmd: [%s]..", cmd)
+
+    code, out, err = _run_shell(cmd, **kwargs)
+    if code != 0:
+        logger.error("failed to run cmd, ret_code: [%s], "
+                     "output: [%s], err: [%s]", code, out, err)
+    return code, out, err
+
+
 def _run_shell(cmd, shell=True, cwd=None, timeout=60):
     process = Popen(stdout=PIPE, stderr=PIPE, args=cmd, shell=shell, cwd=cwd)
     output, err = process.communicate()
@@ -111,6 +129,26 @@ def json_loads(json_str):
         return None
 
 
+def write_file(file_name, content, log=False):
+    """
+    write file
+    :param file_name:
+    :param content:
+    :param log:
+    :return:
+    """
+    try:
+        with open(file_name, "w") as f:
+            f.write("%s" % content)
+
+        if log:
+            logger.info("write to file [%s] content [%s...]", file_name, content[:128])
+    except Exception as e:
+        logger.error("write file [%s] failed, [%s]" % (file_name, e))
+        return False
+    return True
+
+
 def get_cluster_info():
     global CLUSTER_INFO
     if not CLUSTER_INFO:
@@ -140,11 +178,123 @@ def get_role():
         sys.exit(1)
 
 
+def get_last_file(backupdir, str):
+    """
+    get last backup file begin with str
+    :param backupdir:
+    :param str:
+    :return:
+    """
+    files = os.listdir(backupdir)
+    lists = []
+    for f in files:
+        if f.startswith(str):
+            lists.append(f)
+
+    lists.sort(key=lambda fn: os.path.getmtime(backupdir + "/" + fn))
+    file = os.path.join(backupdir,lists[-1])
+    return file
+
+
+def get_last_cmpnode_list():
+    """
+    get last cmpnode id list without prefix, eg. ["001", "002", "003"]
+    :return:
+    """
+    file = get_last_file(BACKUP_DIR, HOST_PREFIX)
+    nodeid_list = []
+    with open(file, "r") as host:
+        for line in host.readlines():
+            if line.find(COMPUTE_HOSTNAME_PREFIX) != -1:
+                node = line.split()[1]
+                node_id = node.split(COMPUTE_HOSTNAME_PREFIX)[1]
+                nodeid_list.append(node_id)
+    return nodeid_list.sort()
+
+
+def get_current_cmpnode_list():
+    """
+    get current cmpnode id list without prefix base on current sids,
+     eg. ["001", "002", "003", "004"]
+    :return:
+    """
+    cluster_info = get_cluster_info()
+    sids = ["%03d" % int(s) for s in cluster_info["sids"].split(",") if s]
+    sids.sort()
+    return sids
+
+
+def convert_nodes_to_nodeid_list(nodes):
+    nodeid_list = []
+    if nodes.find(COMPUTE_HOSTNAME_PREFIX) == -1:
+        return nodeid_list
+    nodestr = nodes.split(COMPUTE_HOSTNAME_PREFIX)[1]
+    if nodestr.startswith("[") and nodestr.endswith("]"):
+        nodestr = nodestr.strip("[").rstrip("]")
+        nodestr_sublist = nodestr.split(",")
+        for substr in nodestr_sublist:
+            if substr.find("-") == -1:
+                nodeid_list.append("%03d" % int(substr))
+            else:
+                start = int(substr.find("-")[0])
+                end = int(substr.find("-")[1])
+                for id in xrange(start, end):
+                    nodeid_list.append("%03d" % int(id))
+    else:
+        nodeid_list.append("%03d" % int(nodestr))
+    return
+
+
+def get_slurm_nodelist_from_sids(sids):
+    """
+    get slurm nodelist(eg. [1,3,5-6]) from sorted sids(eg. 1,3,5,6)
+    :param sids:
+    :return:
+    """
+    nodelist = "{}[".format(COMPUTE_HOSTNAME_PREFIX)  # eg: [1-6,8]
+    start_sid = sids[0]  # eg: 1
+    last_sid = start_sid
+    for sid in sids:
+        if sid - last_sid > 1:
+            if last_sid == start_sid:
+                start_node_id = "%03d" % int(start_sid)
+                # eg: [1-6,8,
+                nodelist = "{}{},".format(nodelist, start_node_id)
+            else:
+                start_node_id = "%03d" % int(start_sid)
+                last_node_id = "%03d" % int(last_sid)
+                # eg: [1-6,8,12-15]
+                nodelist = "{}{}-{},".format(nodelist, start_node_id,
+                                              last_node_id)
+            start_sid = sid
+        last_sid = sid
+
+    if last_sid == start_sid:  # the end of sids
+        start_node_id = "%03d" % int(start_sid)
+        nodelist = "{}{}]".format(nodelist, start_node_id)
+    else:
+        start_node_id = "%03d" % int(start_sid)
+        last_node_id = "%03d" % int(last_sid)
+        nodelist = "{}{}-{}]".format(nodelist, start_node_id, last_node_id)
+    return nodelist
+
+
+def update_queues_node_from_nodeid(queues_info):
+    for _, queue in queues_info.iteritems():
+        if queue[NODES].find(COMPUTE_HOSTNAME_PREFIX) == -1:
+            continue
+        nodeid_list = queue[NODEID_LIST].sort()
+        sids = [int(s) for s in nodeid_list.sort() if s]
+        nodelist = get_slurm_nodelist_from_sids(sids)
+        queue.update({NODEID_LIST: nodelist})
+
+
 def get_hostname():
     role = get_role()
     if role == ROLE_COMPUTE:
         cluster_info = get_cluster_info()
-        return "{}{}".format(COMPUTE_HOSTNAME_PREFIX, cluster_info["sid"])
+        node_id = "%03d" % int(cluster_info["sid"])
+        return "{}{}".format(COMPUTE_HOSTNAME_PREFIX, node_id)
     elif role == ROLE_CONTROLLER:
         cluster_info = get_cluster_info()
         return "{}{}".format(CONTROLLER_HOSTNAME_PREFIX, cluster_info["sid"])

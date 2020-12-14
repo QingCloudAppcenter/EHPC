@@ -16,6 +16,14 @@ CLUSTER_INFO_FILE = "{}/cluster.info".format(APP_CONF_DIR)
 
 SLURM_CONF = "/etc/slurm/slurm.conf"
 SLURM_CONF_TMPL = "{}/tmpl/slurm.conf.tmpl".format(APP_HOME)
+NODE_RESOURCE_FMT = "NodeName={} {}"
+PARTITION_CONF_FMT = "PartitionName={} Default={} MinNodes={} AllowGroups=ALL "\
+                     "PriorityJobFactor=1 PriorityTier=1 DisableRootJobs=NO "\
+                     "RootOnly=NO Hidden=NO Shared=NO GraceTime=0 "\
+                     "PreemptMode=OFF ReqResv=NO AllowAccounts={} "\
+                     "AllowQos=ALL LLN=NO ExclusiveUser={} OverSubscribe=NO "\
+                     "OverTimeLimit=0 State={} Nodes={}"
+
 HPC_MODULE_FILES = "/opt/modules-4.6.0/modulefiles/hpcmodulefiles"
 HPC_MODULE_FILES_TMPL = "{}/tmpl/hpcmodulefiles.tmpl".format(APP_HOME)
 HPC_DEFAULT_MODULE_FILE = "{}/tmpl/default-modulefile".format(APP_HOME)
@@ -26,6 +34,7 @@ BACKUP_SLURM_CONF_CMD = "cp {} {}/slurm.conf_{}.bak".format(SLURM_CONF, BACKUP_D
 LOGIN_HOSTNAME_PREFIX = "login"
 CONTROLLER_HOSTNAME_PREFIX = "controller"
 COMPUTE_HOSTNAME_PREFIX = "node"
+HOST_PREFIX = "host"
 
 ADMIN_HOME_FMT = "{}/home/admin"  # {nas_mount_point}//home/admin
 HOME_FMT = "{}/home/{}"  # {nas_mount_point}/home/user_name
@@ -61,6 +70,27 @@ ACTION_RESET_PASSWORD = "reset_passwd"
 ACTION_SOFTWARE_INSTALL = "install"
 ACTION_SOFTWARE_UNINSTALL = "uninstall"
 
+# Partition attribution
+DEFAULT = "Default"
+NODES = "Nodes"
+PARTITION_NAME = "PartitionName"
+NODEID_LIST = "NodeidList"
+MIN_MODES = "MinNodes"
+ALLOW_ACCOUNTS = "AllowAccounts"
+EXCLUSIVE_USER = "ExclusiveUser"
+STATE = "State"
+NODEID_LIST = "NodeidList"
+PARTITION_CONTROLLER = "controller"
+# queuectl constants
+ACTION_QUEUE_ADD = "add_queue"
+ACTION_QUEUE_GET = "get_queue"
+ACTION_QUEUE_DELETE = "del_queue"
+ACTION_QUEUE_MODIFY = "modify_queue"
+
+# timeout
+ACTION_GET_TIMEOUT = 60
+ACTION_SET_TIMEOUT = 60
+
 ACTION_PARAM_CONF = {
     # userctl
     ACTION_USER_ADD: {
@@ -79,7 +109,7 @@ ACTION_PARAM_CONF = {
     ACTION_RESET_PASSWORD: {
         "type": dict,
         "children": {
-            "user_name": {
+            "username": {
                 "type": str,
                 "required": True
             },
@@ -152,6 +182,136 @@ ACTION_PARAM_CONF = {
                             "required": True
                         },
                         "uninstaller": {
+                            "type": str,
+                            "required": False
+                        }
+                    }
+                }
+            }
+        }
+    },
+
+    # queuectl
+    ACTION_QUEUE_GET: {
+        "type": dict,
+        "children": {
+            "queue": {
+                "type": list,
+                "required": True,
+                "children": {
+                    "type": dict,
+                    "children": {
+                        "queue_name": {
+                            "type": str,
+                            "required": True
+                        }
+                    }
+                }
+            }
+        }
+    },
+    ACTION_QUEUE_DELETE: {
+        "type": dict,
+        "children": {
+            "software": {
+                "type": list,
+                "required": True,
+                "children": {
+                    "type": dict,
+                    "children": {
+                        "queue_name": {
+                            "type": str,
+                            "required": True
+                        }
+                    }
+                }
+            }
+        }
+    },
+    ACTION_QUEUE_ADD: {
+        "type": dict,
+        "children": {
+            "software": {
+                "type": list,
+                "required": True,
+                "children": {
+                    "type": dict,
+                    "children": {
+                        "queue_name": {
+                            "type": str,
+                            "required": True
+                        },
+                        "default": {
+                            "type": str,
+                            "required": True
+                        },
+                        "minnode": {
+                            "type": int,
+                            "required": False
+                        },
+                        "nodelist": {
+                            "type": str,
+                            "required": True
+                        },
+                        "allowaccounts": {
+                            "type": str,
+                            "required": False
+                        },
+                        "denyaccounts": {
+                            "type": str,
+                            "required": False
+                        },
+                        "state": {
+                            "type": str,
+                            "required": False
+                        },
+                        "max_time": {
+                            "type": str,
+                            "required": False
+                        }
+                    }
+                }
+            }
+        }
+    },
+    ACTION_QUEUE_MODIFY: {
+        "type": dict,
+        "children": {
+            "software": {
+                "type": list,
+                "required": True,
+                "children": {
+                    "type": dict,
+                    "children": {
+                        "queue_name": {
+                            "type": str,
+                            "required": True
+                        },
+                        "default": {
+                            "type": str,
+                            "required": True
+                        },
+                        "minnode": {
+                            "type": int,
+                            "required": False
+                        },
+                        "nodelist": {
+                            "type": str,
+                            "required": True
+                        },
+                        "allowaccounts": {
+                            "type": str,
+                            "required": False
+                        },
+                        "denyaccounts": {
+                            "type": str,
+                            "required": False
+                        },
+                        "state": {
+                            "type": str,
+                            "required": False
+                        },
+                        "max_time": {
                             "type": str,
                             "required": False
                         }

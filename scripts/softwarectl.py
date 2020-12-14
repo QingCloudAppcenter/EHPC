@@ -20,6 +20,7 @@ from constants import (
     ACTION_SOFTWARE_INSTALL,
     ACTION_SOFTWARE_UNINSTALL,
     MASTER_CONTROLLER_SID,
+    ROLE_CONTROLLER,
 )
 
 SOFTWARE_WORKDIR_FMT = "{}/tmp/software/{}"
@@ -191,7 +192,7 @@ def main(argv):
         role = get_role()
         cluster_info = get_cluster_info()
         if role != ROLE_CONTROLLER or \
-                cluster_info["sid"] != MASTER_CONTROLLER_SID:
+                int(cluster_info["sid"]) != MASTER_CONTROLLER_SID:
             return
 
         parser = ArgsParser()

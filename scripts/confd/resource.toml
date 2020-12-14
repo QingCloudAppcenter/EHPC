@@ -4,4 +4,3 @@ dest = "/opt/app/conf/resource.info"
   keys = [
     "/hosts/",
 ]
-reload_cmd = "appctl reload"

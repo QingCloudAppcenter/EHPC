@@ -9,6 +9,7 @@ from constants import (
     HPC_MODULE_FILES_TMPL,
     HPC_DEFAULT_MODULE_FILE,
     HPC_MODULE_FILES,
+    COMPUTE_HOSTNAME_PREFIX,
 )
 
 
@@ -29,7 +30,16 @@ def generate_hosts():
         for line in ori_hosts:
             hosts.write(line)
         with open(HOSTS_INFO_FILE, "r") as ehpc_hosts:
-            hosts.writelines(ehpc_hosts.readlines())
+            hosts_lines = ehpc_hosts.readlines()
+        for i in range(len(hosts_lines)):
+            # replace node1 to node001
+            if hosts_lines[i].find(COMPUTE_HOSTNAME_PREFIX) != -1:
+                node = hosts_lines[i].split()[1]
+                sid = int(node.split(COMPUTE_HOSTNAME_PREFIX)[1])
+                new_node = "%s%03d" % (COMPUTE_HOSTNAME_PREFIX, sid)
+                hosts_lines[i] = hosts_lines[i].replace(node, new_node)
+
+        hosts.writelines(hosts_lines)
 
     run_shell("mv {} {}".format(tmp_hosts, HOSTS))
 

@@ -135,7 +135,7 @@ class LdapClient(object):
     # ]
     def list_user(self, user_name=""):
         logger.info("list user ..")
-        search_filter = None
+        search_filter = '(&(objectclass=*))'
         if user_name:
             search_filter = "cn={}".format(user_name)
         ret = self.ldap_object.search_s(self.user_base_dn, ldap.SCOPE_SUBTREE,

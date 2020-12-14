@@ -30,7 +30,7 @@
             "label": "NAS_ID",
             "description": "nas id",
             "type": "string",
-            "default": "pu46atpam",
+            "default": "cv0axfkg",
             "required": "yes"
         },{
             "key": "login",
@@ -146,7 +146,7 @@
                 "label": "ControllerCount",
                 "description": "Number of controller nodes for the cluster to create",
                 "type": "integer",
-                "default": 1,
+                "default": 2,
                 "range": [1,2],
                 "required": "yes"
             }]
@@ -216,30 +216,44 @@
             "description": "Custom service the role(controller) configuration properties",
             "type": "array",
             "properties": [{
-                    "key": "user_name",
-                    "label": "User Name",
-                    "description": "The name of the user",
-                    "type": "string",
-                    "default": "",
-                    "required": "yes"
-                },{
-                    "key": "password",
-                    "label": "Password",
-                    "description": "password of the user",
-                    "type": "password",
-                    "required": "yes"
-                },{
-                    "key": "new_password",
-                    "label": "New Password",
-                    "description": "new password of the user to reset",
-                    "type": "password",
-                    "required": "yes"
+                "key": "user_name",
+                "label": "User Name",
+                "description": "The name of the user",
+                "type": "string",
+                "default": "",
+                "required": "yes"
             },{
-                    "key": "software",
-                    "label": "Software",
-                    "description": "the install/uninstall software list",
-                    "type": "string",
-                    "required": "yes"
+                "key": "password",
+                "label": "Password",
+                "description": "password of the user",
+                "type": "password",
+                "required": "yes"
+            },{
+                "key": "new_password",
+                "label": "New Password",
+                "description": "new password of the user to reset",
+                "type": "password",
+                "required": "yes"
+            },{
+                "key": "software",
+                "label": "Software",
+                "description": "the install/uninstall software list",
+                "type": "string",
+                "required": "yes"
+            },{
+                "key": "queue",
+                "label": "queue",
+                "description": "the queue list for add/remove/modify/get cluster queues",
+                "type": "string",
+                "default": "",
+                "required": "no"
+            },{
+                "key": "job",
+                "label": "job",
+                "description": "the job param for createjobfile/submit/get/start/stop/del cluster hpc jobs",
+                "type": "string",
+                "default": "",
+                "required": "no"
             }]
         }]
     }, {

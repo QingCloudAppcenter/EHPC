@@ -1,0 +1,52 @@
+{
+    "name": {{cluster.name}},
+    "description": {{cluster.description}},
+    "upgrading_policy": "parallel",
+    "vxnet": {{cluster.vxnet}},
+    "nas_id": {{cluster.nas_id}},
+    "nodes": [{
+        "role":"login",
+        "os_reset": false,
+        "container": {
+            "type": "kvm",
+            "zone": "nscc",
+            "image": "img-lnjkiq87"
+        },
+        "net": {
+            "vxnet": true,
+            "ib": true,
+            "base": false
+        },
+        "instance_class": {{cluster.login.instance_class}},
+        "nas_mount_point": {{cluster.login.nas_mount_point}},
+        "cpu": {{cluster.login.cpu}},
+        "cpu_model": {{cluster.login.cpu_model}},
+        "memory": {{cluster.login.memory}},
+        "count": {{cluster.login.count}},
+        "user_access": true,
+        "advanced_actions": ["scale_horizontal", "associate_eip"],
+        "services": {
+            "init": {
+                "cmd": "appctl.hpc init"
+            },
+            "reset_password": {
+                "type": "custom",
+                "cmd": "appctl.hpc reset_passwd",
+                "timeout": 180,
+                "service_params": {
+                    "username": {{service_params.loginnode.username}},
+                    "password": {{service_params.loginnode.password}},
+                    "new_password": {{service_params.loginnode.new_password}}
+                }
+            }
+        }
+    }],
+    "env": {
+        "user": {{env.admin.user}},
+        "password": {{env.admin.password}},
+        "user_id": {{env.admin.user_id}},
+        "group_id": {{env.admin.group_id}},
+        "nas_path": {{env.nas_path}},
+        "nas_mount_point": {{cluster.login.nas_mount_point}}
+    }
+}
